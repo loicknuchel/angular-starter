@@ -1,0 +1,17 @@
+$icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
+
+@import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
+
+// bower:scss
+@import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss";
+// endbower
+
+@import "dashboard/_variables";
+@import "dashboard/_mixins";
+@import "dashboard/_global";
+@import "dashboard/_loading";
+@import "dashboard/_content";
+@import "dashboard/_header";
+@import "dashboard/_sidebar";
+@import "dashboard/_widgets";
+@import "dashboard/_hamburg";
