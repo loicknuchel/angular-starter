@@ -18,50 +18,52 @@ angular.module('app')
       accessLevels = routingConfig.accessLevels,
       userRoles = routingConfig.userRoles,
       defaultUser = { username: '', role: userRoles.public },
-      currentUser = StorageSrv.get(storageKey) || defaultUser;
+      currentUser = StorageSrv.get(storageKey) || angular.copy(defaultUser),
+      loginDefer = null,
+      logoutDefer = null;
 
-  function changeUser(user){
-    angular.extend(currentUser, user);
-    StorageSrv.set(storageKey, currentUser);
-  }
-
-  return {
-    isAuthorized: function(accessLevel, role){
-      if(role === undefined){ role = currentUser.role; }
-      return accessLevel.bitMask & role.bitMask;
-    },
-    isLoggedIn: function(user){
-      if(user === undefined){ user = currentUser; }
-      return user.role && user.role.title !== userRoles.public.title;
-    },
-    /*register: function(user, success, error){
-      $http.post('/register', user).success(function(res){
-        changeUser(res);
-        success();
-      }).error(error);
-    },*/
-    login: function(credentials){
-      var loginDefer = $q.defer();
-      if(credentials.email === 'loicknuchel@gmail.com'){
-        var user = { email: credentials.email, username: credentials.email, role: userRoles.user };
-        console.log('user', user);
-        changeUser(user);
-        loginDefer.resolve(user);
-      } else {
-        loginDefer.reject({
-          message: 'Bad user !'
-        });
-      }
-      return loginDefer.promise;
-    },
-    logout: function(){
-      var logoutDefer = $q.defer();
-      changeUser(defaultUser);
-      logoutDefer.resolve();
-      return logoutDefer.promise;
-    },
+  var service = {
+    isAuthorized: isAuthorized,
+    isLoggedIn: isLoggedIn,
+    login: login,
+    logout: logout,
     accessLevels: accessLevels,
     userRoles: userRoles,
     user: currentUser
   };
+
+  function isAuthorized(accessLevel, role){
+    if(role === undefined){ role = currentUser.role; }
+    return accessLevel.bitMask & role.bitMask;
+  }
+
+  function isLoggedIn(user){
+    if(user === undefined){ user = currentUser; }
+    return user.role && user.role.title !== userRoles.public.title;
+  }
+
+  function login(credentials){
+    loginDefer = $q.defer();
+    if(credentials.email === 'toto@gmail.com'){
+      var user = { email: credentials.email, username: credentials.email, role: userRoles.user };
+      angular.extend(currentUser, user);
+      StorageSrv.set(storageKey, currentUser);
+      loginDefer.resolve(user);
+    } else {
+      loginDefer.reject({
+        message: 'Bad user !'
+      });
+    }
+    return loginDefer.promise;
+  }
+
+  function logout(){
+    var logoutDefer = $q.defer();
+    angular.copy(defaultUser, currentUser);
+    StorageSrv.set(storageKey, currentUser);
+    logoutDefer.resolve();
+    return logoutDefer.promise;
+  }
+
+  return service;
 });
