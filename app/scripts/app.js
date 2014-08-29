@@ -78,7 +78,8 @@ angular.module('app', ['ui.router', 'ngCookies', 'ngStorage', 'ui.bootstrap'])
 
   $urlRouterProvider.otherwise('/');
 
-  $httpProvider.interceptors.push(function($q, $location){
+  // logout on http status 401 or 403
+  $httpProvider.interceptors.push(['$q', '$location', function($q, $location){
     return {
       'responseError': function(response){
         if(response.status === 401 || response.status === 403){
@@ -87,7 +88,7 @@ angular.module('app', ['ui.router', 'ngCookies', 'ngStorage', 'ui.bootstrap'])
         return $q.reject(response);
       }
     };
-  });
+  }]);
 })
 
 .constant('debug', true)

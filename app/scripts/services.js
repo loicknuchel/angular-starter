@@ -18,9 +18,7 @@ angular.module('app')
       accessLevels = routingConfig.accessLevels,
       userRoles = routingConfig.userRoles,
       defaultUser = { username: '', role: userRoles.public },
-      currentUser = StorageSrv.get(storageKey) || angular.copy(defaultUser),
-      loginDefer = null,
-      logoutDefer = null;
+      currentUser = StorageSrv.get(storageKey) || angular.copy(defaultUser);
 
   var service = {
     isAuthorized: isAuthorized,
@@ -43,15 +41,15 @@ angular.module('app')
   }
 
   function login(credentials){
-    loginDefer = $q.defer();
-    if(credentials.email === 'toto@gmail.com'){
+    var loginDefer = $q.defer();
+    if(credentials.email && credentials.password){
       var user = { email: credentials.email, username: credentials.email, role: userRoles.user };
       angular.extend(currentUser, user);
       StorageSrv.set(storageKey, currentUser);
       loginDefer.resolve(user);
     } else {
       loginDefer.reject({
-        message: 'Bad user !'
+        message: 'Error: please fill email AND password !'
       });
     }
     return loginDefer.promise;
