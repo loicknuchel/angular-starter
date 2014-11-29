@@ -1,52 +1,40 @@
 angular.module('app')
 
-.factory('StorageSrv', function(){
+
+.factory('AuthSrv', function($q, $http, StorageUtils){
   'use strict';
-  var service = {
-    get:    function(key){        if(localStorage){ return JSON.parse(localStorage.getItem(key));     } },
-    set:    function(key, value){ if(localStorage){ localStorage.setItem(key, JSON.stringify(value)); } },
-    remove: function(key){        if(localStorage){ localStorage.removeItem(key);                     } }
-  };
-
-  return service;
-})
-
-
-.factory('AuthSrv', function($q, $http, StorageSrv){
-  'use strict';
-  var storageKey = 'user',
-      accessLevels = routingConfig.accessLevels,
-      userRoles = routingConfig.userRoles,
-      defaultUser = { username: '', role: userRoles.public },
-      currentUser = StorageSrv.get(storageKey) || angular.copy(defaultUser);
-
+  var storageKey = 'user';
+  var defaultUser = { username: '', role: routingConfig.userRoles.public };
   var service = {
     isAuthorized: isAuthorized,
     isLoggedIn: isLoggedIn,
     login: login,
     logout: logout,
-    accessLevels: accessLevels,
-    userRoles: userRoles,
-    user: currentUser
+    accessLevels: routingConfig.accessLevels,
+    userRoles: routingConfig.userRoles
   };
 
-  function isAuthorized(accessLevel, role){
-    if(role === undefined){ role = currentUser.role; }
-    return accessLevel.bitMask & role.bitMask;
+  function isAuthorized(accessLevel, _role){
+    var rolePromise = _role !== undefined ? $q.when(_role) : StorageUtils.get(storageKey, defaultUser).then(function(user){ return user.role; });
+    return rolePromise.then(function(role){
+      return accessLevel.bitMask & role.bitMask;
+    });
   }
 
-  function isLoggedIn(user){
-    if(user === undefined){ user = currentUser; }
-    return user.role && user.role.title !== userRoles.public.title;
+  function isLoggedIn(_user){
+    var userPromise = _user !== undefined ? $q.when(_user) : StorageUtils.get(storageKey, defaultUser);
+    return userPromise.then(function(user){
+      return user.role && user.role.title !== routingConfig.userRoles.public.title;
+    });
   }
 
   function login(credentials){
     var loginDefer = $q.defer();
-    if(credentials.email && credentials.password){
-      var user = { email: credentials.email, username: credentials.email, role: userRoles.user };
-      angular.extend(currentUser, user);
-      StorageSrv.set(storageKey, currentUser);
-      loginDefer.resolve(user);
+    if(credentials.email && credentials.password){ // TODO : check user credentials !
+      var user = { email: credentials.email, username: credentials.email, role: routingConfig.userRoles.user };
+      StorageUtils.set(storageKey, user).then(function(){
+        loginDefer.resolve(user);
+      });
     } else {
       loginDefer.reject({
         message: 'Error: please fill email AND password !'
@@ -57,9 +45,9 @@ angular.module('app')
 
   function logout(){
     var logoutDefer = $q.defer();
-    angular.copy(defaultUser, currentUser);
-    StorageSrv.set(storageKey, currentUser);
-    logoutDefer.resolve();
+    StorageUtils.remove(storageKey).then(function(){
+      logoutDefer.resolve();
+    });
     return logoutDefer.promise;
   }
 

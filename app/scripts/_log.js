@@ -111,6 +111,7 @@ var Logger = (function(){
   })();
 
   var config = {
+    storagePrefix: Config.storagePrefix,
     backendUrl: Config.backendUrl,
     verbose: Config.verbose,
     debug: Config.debug,
@@ -125,6 +126,7 @@ var Logger = (function(){
   Scheduler.init();
 
   function track(name, event){
+    if(typeof event === 'string')                       { event = {messgae: event};                 }
     if(!event.name)                                     { event.name = name;                        }
     if(!event.time)                                     { event.time = Date.now();                  }
     if(!event.user)                                     { event.user = _getUserId();                }
@@ -165,7 +167,7 @@ var Logger = (function(){
     if(cache && cache.userId){
       return cache.userId;
     } else if(localStorage){
-      var user = JSON.parse(localStorage.getItem('app-user'));
+      var user = JSON.parse(localStorage.getItem(config.storagePrefix+'user'));
       if(user && user.id){
         cache.userId = user.id;
         return user.id;

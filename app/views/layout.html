@@ -1,10 +1,10 @@
-<div id="page-wrapper" ng-class="{'active': state.toggle}" ng-cloak>
+<div id="page-wrapper" ng-class="{'active': root.data.sidebarOpened}" ng-cloak>
 
   <!-- Sidebar -->
   <div id="sidebar-wrapper">
     <ul class="sidebar">
       <li class="sidebar-main">
-        <a ng-click="toggleSidebar()">
+        <a ng-click="root.fn.toggleSidebar()">
           Dashboard
           <span class="menu-icon glyphicon glyphicon-transfer"></span>
         </a>

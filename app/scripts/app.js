@@ -1,4 +1,4 @@
-angular.module('app', ['ui.router', 'ngCookies', 'ngStorage', 'ui.bootstrap'])
+angular.module('app', ['ui.router', 'ngCookies', 'LocalForageModule', 'ui.bootstrap'])
 
 .config(function($stateProvider, $urlRouterProvider, $httpProvider, $provide){
   'use strict';
@@ -90,24 +90,24 @@ angular.module('app', ['ui.router', 'ngCookies', 'ngStorage', 'ui.bootstrap'])
 
 .constant('Config', Config)
 
-.run(function($rootScope, $sce, $state, $localStorage, $window, AuthSrv){
+.run(function($rootScope, $sce, $state, $window, AuthSrv){
   'use strict';
   // init
-  if(!$localStorage.state){$localStorage.state = {};}
-  $rootScope.state = $localStorage.state;
+  var data = {}, fn = {};
+  $rootScope.root = {data: data, fn: fn};
 
-  $rootScope.toggleSidebar = function(){
-    $rootScope.state.toggle = !$rootScope.state.toggle;
+  fn.toggleSidebar = function(){
+    data.sidebarOpened = !data.sidebarOpened;
   };
 
   var mobileView = 992;
   $rootScope.$watch(function(){ return $window.innerWidth; }, function(newValue){
     if(newValue >= mobileView){
-      if ($rootScope.state.toggle === undefined){
-        $rootScope.state.toggle = true;
+      if (data.sidebarOpened === undefined){
+        data.sidebarOpened = true;
       }
     } else {
-      $rootScope.state.toggle = false;
+      data.sidebarOpened = false;
     }
   });
 
@@ -118,18 +118,24 @@ angular.module('app', ['ui.router', 'ngCookies', 'ngStorage', 'ui.bootstrap'])
     if(!(toState && toState.data && toState.data.access)){
       Logger.track('error', 'Access undefined for state <'+toState.name+'>');
       event.preventDefault();
-    } else if(!AuthSrv.isAuthorized(toState.data.access)){
-      Logger.track('error', 'Seems like you\'re not allowed to access to <'+toState.name+'> state...');
-      event.preventDefault();
+    } else {
+      AuthSrv.isAuthorized(toState.data.access).then(function(authorized){
+        if(!authorized){
+          Logger.track('error', 'Seems like you\'re not allowed to access to <'+toState.name+'> state...');
+          event.preventDefault();
 
-      if(fromState.url === '^'){
-        if(AuthSrv.isLoggedIn()){
-          $state.go('user.home');
-        } else {
-          $rootScope.error = null;
-          $state.go('anon.login');
+          if(fromState.url === '^'){
+            AuthSrv.isLoggedIn().then(function(logged){
+              if(logged){
+                $state.go('user.home');
+              } else {
+                $rootScope.error = null;
+                $state.go('anon.login');
+              }
+            });
+          }
         }
-      }
+      });
     }
   });
 
