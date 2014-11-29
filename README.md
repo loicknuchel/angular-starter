@@ -1,7 +1,7 @@
 # AngularJS dashboard
 
 Fully featured dashboard built with AngularJS. This project is ideal to start an AngularJS app using [grunt](http://gruntjs.com/) and [bower](http://bower.io/).
-It's greatly inspired/copied from [Ehesp/Responsive-Dashboard](https://github.com/Ehesp/Responsive-Dashboard) but adapted with other tools and with more features.
+It's greatly inspired/copied from [rdash/rdash-angular](https://github.com/rdash/rdash-angular) but adapted with other tools and with more features.
 
 With this template you will have :
 
@@ -14,7 +14,8 @@ Live example : TODO
 
 ## Getting started
 
-- clone the repo and go to project folder.
+- clone the repo `git clone git@github.com:loicknuchel/angularjs-dashboard.git`
+- go to project folder `cd angularjs-dashboard`
 - run `npm install`
 - run `bower install`
 - run `grunt serve`

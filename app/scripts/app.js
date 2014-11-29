@@ -1,10 +1,7 @@
-'use strict';
-
 angular.module('app', ['ui.router', 'ngCookies', 'ngStorage', 'ui.bootstrap'])
 
-.config(function($stateProvider, $urlRouterProvider, $httpProvider, $provide, debug){
-  Logger.setDebug(debug);
-
+.config(function($stateProvider, $urlRouterProvider, $httpProvider, $provide){
+  'use strict';
   // catch exceptions in angular
   $provide.decorator('$exceptionHandler', ['$delegate', function($delegate){
     return function(exception, cause){
@@ -91,9 +88,10 @@ angular.module('app', ['ui.router', 'ngCookies', 'ngStorage', 'ui.bootstrap'])
   }]);
 })
 
-.constant('debug', true)
+.constant('Config', Config)
 
 .run(function($rootScope, $sce, $state, $localStorage, $window, AuthSrv){
+  'use strict';
   // init
   if(!$localStorage.state){$localStorage.state = {};}
   $rootScope.state = $localStorage.state;

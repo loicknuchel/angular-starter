@@ -1,14 +1,14 @@
-'use strict';
-
 angular.module('app')
 
 .filter('date', function(){
+  'use strict';
   return function(timestamp, format){
     return timestamp ? moment(timestamp).format(format ? format : 'LL') : '<date>';
   };
 })
 
 .filter('duration', function(){
+  'use strict';
   return function(seconds, humanize){
     if(seconds || seconds === 0){
       if(humanize){
@@ -25,6 +25,7 @@ angular.module('app')
 })
 
 .filter('mynumber', function($filter){
+  'use strict';
   return function(number, round){
     var mul = Math.pow(10, round ? round : 0);
     return $filter('number')(Math.round(number*mul)/mul);

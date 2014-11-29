@@ -1,8 +1,7 @@
-'use strict';
-
 angular.module('app')
 
 .directive('rdWidget', function(){
+  'use strict';
   var directive = {
     transclude: true,
     template: '<div class="widget" ng-transclude></div>',
@@ -12,6 +11,7 @@ angular.module('app')
 })
 
 .directive('rdWidgetHeader', function(){
+  'use strict';
   var directive = {
     requires: '^rdWidget',
     scope: {
@@ -26,6 +26,7 @@ angular.module('app')
 })
 
 .directive('rdWidgetBody', function(){
+  'use strict';
   var directive = {
     requires: '^rdWidget',
     scope: {
@@ -43,6 +44,7 @@ angular.module('app')
  * @see http://tobiasahlin.com/spinkit/
  */
 .directive('rdLoading', function (){
+  'use strict';
   var directive = {
     restrict: 'AE',
     template: '<div class="loading"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>'

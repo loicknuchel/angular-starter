@@ -1,8 +1,7 @@
-'use strict';
-
 angular.module('app')
 
 .factory('StorageSrv', function(){
+  'use strict';
   var service = {
     get:    function(key){        if(localStorage){ return JSON.parse(localStorage.getItem(key));     } },
     set:    function(key, value){ if(localStorage){ localStorage.setItem(key, JSON.stringify(value)); } },
@@ -14,6 +13,7 @@ angular.module('app')
 
 
 .factory('AuthSrv', function($q, $http, StorageSrv){
+  'use strict';
   var storageKey = 'user',
       accessLevels = routingConfig.accessLevels,
       userRoles = routingConfig.userRoles,
