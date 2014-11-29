@@ -1,5 +1,7 @@
 # AngularJS dashboard
 
+![screenshot](screenshots/dashboard.jpg)
+
 Fully featured dashboard built with AngularJS. This project is ideal to start an AngularJS app using [grunt](http://gruntjs.com/) and [bower](http://bower.io/).
 It's greatly inspired/copied from [rdash/rdash-angular](https://github.com/rdash/rdash-angular) but adapted with other tools and with more features.
 
@@ -20,6 +22,11 @@ Live example : TODO
 - run `bower install`
 - run `grunt serve`
 - You're setup with a shiny livereload :D
+
+## TODO
+
+- create some directive to create charts with highcharts
+- create some utils for Parse & Firebase
 
 ## Feedback
 
