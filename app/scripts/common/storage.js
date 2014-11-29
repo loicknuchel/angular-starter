@@ -169,8 +169,8 @@ angular.module('app')
       }
     }
     if(Config.storage && $window.localStorage){
-      for(var i=$window.localStorage.length-1; i >= 0; i--){
-        var key = $window.localStorage.key(i);
+      for(var j=$window.localStorage.length-1; j >= 0; j--){
+        var key = $window.localStorage.key(j);
         if(Utils.startsWith(key, Config.storagePrefix+keyStartWith)){
           $window.localStorage.removeItem(key);
         }
