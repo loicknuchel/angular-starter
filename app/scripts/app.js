@@ -71,6 +71,11 @@ angular.module('app', ['ui.router', 'ngCookies', 'LocalForageModule', 'ui.bootst
   .state('user.tables', {
     url: '/tables',
     templateUrl: 'views/tables.html'
+  })
+  .state('user.libs', {
+    url: '/libs',
+    templateUrl: 'views/libs.html',
+    controller: 'LibsCtrl'
   });
 
   $urlRouterProvider.otherwise('/');

@@ -8,11 +8,9 @@ It's greatly inspired/copied from [rdash/rdash-angular](https://github.com/rdash
 With this template you will have :
 
 - a login system already setted (see [AuthSrv](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/services.js))
-- an advanced logging & tracking errors system with mixpanel integration example (see [log.js](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/log.js))
-- many helpers such as [filters for dates](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/filters.js)
-- [moment](http://momentjs.com/) (date manipulation lib) & [lodash](http://lodash.com/) (functionnal utility helpers) are included
-
-Live example : TODO
+- an advanced logging & tracking errors system (see [_log.js](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/_log.js))
+- many helpers such as [filters for dates](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/filters.js), [crud builders](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/common/crud-rest-utils.js), [storage helpers](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/common/storage.js) and many more...
+- usefull libs already included : [moment](http://momentjs.com/) (date manipulation lib), [lodash](http://lodash.com/) (functionnal utility helpers) are included, [localForage](https://github.com/mozilla/localForage)
 
 ## Getting started
 
@@ -27,6 +25,7 @@ Live example : TODO
 
 - create some directive to create charts with highcharts
 - create some utils for Parse & Firebase
+- live exemple en github pages
 
 ## Feedback
 

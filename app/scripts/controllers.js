@@ -47,4 +47,39 @@ angular.module('app')
   $scope.closeAlert = function(index){
     $scope.alerts.splice(index, 1);
   };
+})
+
+
+.controller('LibsCtrl', function($scope){
+  'use strict';
+  var data = {};
+  $scope.data = data;
+
+  data.libs = [{
+    name: 'ng-admin',
+    url: 'https://github.com/marmelab/ng-admin',
+    description: 'Easily add an admin CRUD to any REST API !',
+    demo: 'http://ng-admin.marmelab.com/'
+  },{
+    name: 'sensei-grid',
+    url: 'https://github.com/datazenit/sensei-grid',
+    description: 'Simple data grid (excel like) with edit functions',
+    demo: 'https://datazenit.com/static/sensei-grid/examples/'
+  },{
+    name: 'ment.io',
+    url: 'https://github.com/jeff-collins/ment.io',
+    description: 'Twitter like textarea typeahead based on a trigger character',
+    demo: 'http://jeff-collins.github.io/ment.io/'
+  }];
+
+  data.samples = [{
+    name: 'keen-dashboards',
+    url: 'https://github.com/keen/dashboards',
+    description: 'Sample dashboard layouts from keen.io',
+    demo: 'http://keen.github.io/dashboards/'
+  }, {
+    name: 'dashboard-samples',
+    url: 'http://thedesigninspiration.com/articles/25-innovative-dashboard-concepts-and-designs/',
+    description: '25 Innovative Dashboard Concepts and Designs'
+  }];
 });

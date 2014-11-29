@@ -1,0 +1,42 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="widget">
+      <div class="widget-header">
+        <i class="fa fa-tasks"></i> Librairies
+      </div>
+      <div class="widget-body medium no-padding">
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+              <tr ng-repeat="lib in data.libs">
+                <td><a ng-href="{{lib.url}}" target="{{lib.name}}">{{lib.name}}</a></td>
+                <td>{{lib.description}}</td>
+                <td><a ng-href="{{lib.demo}}" target="demo-{{lib.name}}" ng-show="lib.demo">démo</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="widget">
+      <div class="widget-header">
+        <i class="fa fa-tasks"></i> Inspiration
+      </div>
+      <div class="widget-body medium no-padding">
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+              <tr ng-repeat="sample in data.samples">
+                <td><a ng-href="{{sample.url}}" target="{{lib.name}}">{{sample.name}}</a></td>
+                <td>{{sample.description}}</td>
+                <td><a ng-href="{{sample.demo}}" target="demo-{{sample.name}}" ng-show="sample.demo">démo</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
