@@ -1,6 +1,6 @@
 angular.module('app', ['ui.router', 'ngCookies', 'LocalForageModule', 'ui.bootstrap'])
 
-.config(function($stateProvider, $urlRouterProvider, $httpProvider, $provide){
+.config(function($stateProvider, $urlRouterProvider, $httpProvider, $provide, ParseUtilsProvider, Config){
   'use strict';
   // catch exceptions in angular
   $provide.decorator('$exceptionHandler', ['$delegate', function($delegate){
@@ -20,7 +20,6 @@ angular.module('app', ['ui.router', 'ngCookies', 'LocalForageModule', 'ui.bootst
       Logger.track('exception', data);
     };
   }]);
-
 
   var access = routingConfig.accessLevels;
 
@@ -72,6 +71,11 @@ angular.module('app', ['ui.router', 'ngCookies', 'LocalForageModule', 'ui.bootst
     url: '/tables',
     templateUrl: 'views/tables.html'
   })
+  .state('user.parse', {
+    url: '/parse',
+    templateUrl: 'views/parse.html',
+    controller: 'ParseCtrl'
+  })
   .state('user.libs', {
     url: '/libs',
     templateUrl: 'views/libs.html',
@@ -79,6 +83,8 @@ angular.module('app', ['ui.router', 'ngCookies', 'LocalForageModule', 'ui.bootst
   });
 
   $urlRouterProvider.otherwise('/');
+
+  ParseUtilsProvider.initialize(Config.parse.applicationId, Config.parse.restApiKey);
 
   // logout on http status 401 or 403
   $httpProvider.interceptors.push(['$q', '$location', function($q, $location){

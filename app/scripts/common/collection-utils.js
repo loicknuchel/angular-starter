@@ -8,9 +8,9 @@ angular.module('app')
     updateElt: updateElt,
     upsertElt: upsertElt,
     removeElt: removeElt,
-    updateEltById: updateEltById,
-    upsertEltById: upsertEltById,
-    removeEltById: removeEltById,
+    updateEltBy: updateEltBy,
+    upsertEltBy: upsertEltBy,
+    removeEltBy: removeEltBy,
     toMap: toMap,
     toArray: toArray,
     size: size,
@@ -60,9 +60,21 @@ angular.module('app')
     _.remove(collection, selector);
   }
 
-  function updateEltById(collection, elt){ return updateElt(collection, {id: elt.id}, elt);         }
-  function upsertEltById(collection, elt){ return upsertElt(collection, {id: elt.id}, elt.id, elt); }
-  function removeEltById(collection, elt){ return removeElt(collection, {id: elt.id});              }
+  function updateEltBy(collection, elt, keyAttr){
+    var selector = {};
+    selector[keyAttr] = elt[keyAttr];
+    return updateElt(collection, selector, elt);
+  }
+  function upsertEltBy(collection, elt, keyAttr){
+    var selector = {};
+    selector[keyAttr] = elt[keyAttr];
+    return upsertElt(collection, selector, elt[keyAttr], elt);
+  }
+  function removeEltBy(collection, elt, keyAttr){
+    var selector = {};
+    selector[keyAttr] = elt[keyAttr];
+    return removeElt(collection, selector);
+  }
 
   function toMap(arr){
     var map = {};

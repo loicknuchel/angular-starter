@@ -50,11 +50,35 @@ angular.module('app')
 })
 
 
+.controller('ParseCtrl', function($scope, TaskSrv, CrudRestUtils){
+  'use strict';
+  var defaultSort = {order: 'done', desc: true};
+  var defaultFormElt = {done: false};
+  $scope.crud = CrudRestUtils.createCrudCtrl('Tasks', null, TaskSrv, defaultSort, defaultFormElt);
+})
+
+
 .controller('LibsCtrl', function($scope){
   'use strict';
   var data = {};
   $scope.data = data;
 
+  /*
+   * Editor :
+   *  - http://imperavi.com/redactor/ with https://github.com/TylerGarlick/angular-redactor
+   *  - http://textangular.com/
+   *  - https://github.com/ghinda/angular-meditor
+   * Alerts :
+   *  - http://lipis.github.io/bootstrap-sweetalert/
+   * Notifications :
+   *  - http://cgross.github.io/angular-notify/demo/
+   *  - http://jvandemo.github.io/angular-growl-notifications/
+   *
+   * Dashboards :
+   *  - http://webapplayers.com/inspinia_admin-v1.6/ (https://wrapbootstrap.com/theme/inspinia-responsive-admin-theme-WB0R5L90S)
+   *  - http://condorthemes.com/flatdream/ (https://wrapbootstrap.com/theme/flat-dream-responsive-admin-template-WB004G996)
+   *  - http://rubix.sketchpixy.com/ltr/#/app/dashboard (https://wrapbootstrap.com/theme/rubix-reactjs-powered-admin-template-WB09498FH)
+   */
   data.libs = [{
     name: 'ng-admin',
     url: 'https://github.com/marmelab/ng-admin',

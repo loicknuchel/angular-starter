@@ -18,14 +18,16 @@ angular.module('app')
    * Elements shoud have an identifying field 'id' !!!
    */
   function createCrud(endpointUrl, _getData, _processBreforeSave){
+    var objectKey = 'id';
     var cache = [];
     var CrudSrv = {
       cache:    cache,
-      getUrl:   function(_id) { return _crudGetUrl(_id, endpointUrl);                                     },
-      getAll:   function()    { return _crudGetAll(endpointUrl, cache, _getData);                         },
-      get:      function(id)  { return _crudGet(id, endpointUrl, cache, _getData);                        },
-      save:     function(elt) { return _crudSave(elt, endpointUrl, cache, _getData, _processBreforeSave); },
-      remove:   function(elt) { return _crudRemove(elt, endpointUrl, cache);                              }
+      eltKey:   objectKey,
+      getUrl:   function(_id) { return _crudGetUrl(endpointUrl, _id);                                                 },
+      getAll:   function()    { return _crudGetAll(endpointUrl, cache, _getData);                                     },
+      get:      function(id)  { return _crudGet(id, endpointUrl, objectKey, cache, _getData);                         },
+      save:     function(elt) { return _crudSave(elt, endpointUrl, objectKey, cache, _getData, _processBreforeSave);  },
+      remove:   function(elt) { return _crudRemove(elt, endpointUrl, objectKey, cache);                               }
     };
     return CrudSrv;
   }
@@ -52,7 +54,7 @@ angular.module('app')
       data: data,
       fn: {
         sort:       function(order, _desc)    { _ctrlSort(order, _desc, data);                  },
-        toggle:     function(elt)             { _ctrlToggle(elt, data);                         },
+        toggle:     function(elt)             { _ctrlToggle(elt, CrudSrv, data);                },
         create:     function()                { _ctrlCreate(data);                              },
         edit:       function(elt)             { _ctrlEdit(elt, data);                           },
         addElt:     function(obj, attr, _elt) { _ctrlAddElt(obj, attr, _elt);                   },
@@ -69,7 +71,7 @@ angular.module('app')
   }
 
 
-  function _crudGetUrl(_id, endpointUrl){
+  function _crudGetUrl(endpointUrl, _id){
     return endpointUrl+(_id ? '/'+_id : '');
   }
 
@@ -88,7 +90,7 @@ angular.module('app')
     });
   }
 
-  function _crudGet(id, endpointUrl, cache, _getData){
+  function _crudGet(id, endpointUrl, objectKey, cache, _getData){
     return $http.get(_crudGetUrl(endpointUrl, id)).then(function(res){
       var elt;
       if(typeof _getData === 'function'){
@@ -96,19 +98,19 @@ angular.module('app')
       } else if(res && res.data){
         elt = res.data.data ? res.data.data : res.data;
       }
-      if(elt && elt.id){
-        CollectionUtils.upsertEltById(cache, elt);
+      if(elt && elt[objectKey]){
+        CollectionUtils.upsertEltBy(cache, elt, objectKey);
         return elt;
       }
     });
   }
 
-  function _crudSave(elt, endpointUrl, cache, _getData, _processBreforeSave){
+  function _crudSave(elt, endpointUrl, objectKey, cache, _getData, _processBreforeSave){
     if(elt){
       if(typeof _processBreforeSave === 'function'){ _processBreforeSave(elt); }
       var promise = null;
-      if(elt.id){ // update
-        promise = $http.put(_crudGetUrl(endpointUrl, elt.id), elt);
+      if(elt[objectKey]){ // update
+        promise = $http.put(_crudGetUrl(endpointUrl, elt[objectKey]), elt);
       } else { // create
         promise = $http.post(_crudGetUrl(endpointUrl), elt);
       }
@@ -119,8 +121,8 @@ angular.module('app')
         } else if(res && res.data){
           elt = res.data.data ? res.data.data : res.data;
         }
-        if(elt && elt.id){
-          CollectionUtils.upsertEltById(cache, elt);
+        if(elt && elt[objectKey]){
+          CollectionUtils.upsertEltBy(cache, elt, objectKey);
           return elt;
         } else {
           if(res && res.data && res.data.message){
@@ -135,11 +137,11 @@ angular.module('app')
     }
   }
 
-  function _crudRemove(elt, endpointUrl, cache){
-    if(elt && elt.id){
-      return $http.delete(_crudGetUrl(endpointUrl, elt.id)).then(function(res){
+  function _crudRemove(elt, endpointUrl, objectKey, cache){
+    if(elt && elt[objectKey]){
+      return $http.delete(_crudGetUrl(endpointUrl, elt[objectKey])).then(function(res){
         if(res && res.data){
-          CollectionUtils.removeEltById(cache, elt);
+          CollectionUtils.removeEltBy(cache, elt, objectKey);
           return res.data;
         }
       });
@@ -173,8 +175,8 @@ angular.module('app')
     Utils.sort(data.elts, data.currentSort);
   }
 
-  function _ctrlToggle(elt, data){
-    if(elt && data.selectedElt && elt.id === data.selectedElt.id){
+  function _ctrlToggle(elt, CrudSrv, data){
+    if(elt && data.selectedElt && elt[CrudSrv.eltKey] === data.selectedElt[CrudSrv.eltKey]){
       data.selectedElt = null;
     } else {
       data.selectedElt = elt;
@@ -212,7 +214,7 @@ angular.module('app')
     data.status.saving = true;
     var elt = _elt ? _elt : data.form;
     return CrudSrv.save(elt).then(function(elt){
-      CollectionUtils.upsertEltById(data.elts, elt);
+      CollectionUtils.upsertEltBy(data.elts, elt, CrudSrv.eltKey);
       if(data.currentSort){Utils.sort(data.elts, data.currentSort);}
       if(data.header){ data.header.title = title+' ('+data.elts.length+')'; }
       data.selectedElt = elt;
@@ -227,10 +229,10 @@ angular.module('app')
   }
 
   function _ctrlRemove(elt, CrudSrv, data, title){
-    if(elt && elt.id && $window.confirm('Supprimer ?')){
+    if(elt && elt[CrudSrv.eltKey] && $window.confirm('Supprimer ?')){
       data.status.removing = true;
       return CrudSrv.remove(elt).then(function(){
-        CollectionUtils.removeEltById(data.elts, elt);
+        CollectionUtils.removeEltBy(data.elts, elt, CrudSrv.eltKey);
         if(data.header){ data.header.title = title+' ('+data.elts.length+')'; }
         data.selectedElt = null;
         data.form = null;
@@ -247,7 +249,7 @@ angular.module('app')
   }
 
   function _ctrlEltRestUrl(_elt, CrudSrv){
-    return _elt && _elt.id ? CrudSrv.getUrl(_elt.id) : CrudSrv.getUrl();
+    return _elt && _elt[CrudSrv.eltKey] ? CrudSrv.getUrl(_elt[CrudSrv.eltKey]) : CrudSrv.getUrl();
   }
 
   return service;

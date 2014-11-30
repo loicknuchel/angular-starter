@@ -8,7 +8,11 @@ var Config = (function(){
     storage: true, // should save data to browser storage
     storagePrefix: 'app-', // prefix all stoarge entries with this prefix
     emailSupport: '',
-    backendUrl: ''
+    backendUrl: '',
+    parse: {
+      applicationId: 'Qm1ixHWM9SenQ7fUkW5zlZarg4YUU4pKQcHcVSYp',
+      restApiKey: 'MiQdMKC1zHduz5nq6CvJGqaD0kgp5ODVc8RNeAxT'
+    }
   };
   return cfg;
 })();

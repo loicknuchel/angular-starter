@@ -1,6 +1,12 @@
 angular.module('app')
 
 
+.factory('TaskSrv', function(ParseUtils){
+  'use strict';
+  return ParseUtils.createCrud('/classes/Task');
+})
+
+
 .factory('AuthSrv', function($q, $http, StorageUtils){
   'use strict';
   var storageKey = 'user';
