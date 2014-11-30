@@ -1,6 +1,6 @@
 angular.module('app')
 
-.factory('CrudRestUtils', function($http, $q, $window, CollectionUtils, Utils){
+.factory('CrudRestUtils', function($http, $q, $cacheFactory, $window, CollectionUtils, Utils){
   'use strict';
   var service = {
     createCrud: createCrud,
@@ -17,18 +17,20 @@ angular.module('app')
    * 
    * Elements shoud have an identifying field 'id' !!!
    */
-  function createCrud(endpointUrl, _getData, _processBreforeSave){
+  function createCrud(endpointUrl, _getData, _processBreforeSave, _useCache){
     var objectKey = 'id';
-    var cache = [];
+    var cache = _useCache ? $cacheFactory(endpointUrl) : null;
     var CrudSrv = {
-      cache:    cache,
       eltKey:   objectKey,
-      getUrl:   function(_id) { return _crudGetUrl(endpointUrl, _id);                                                 },
-      getAll:   function()    { return _crudGetAll(endpointUrl, cache, _getData);                                     },
-      get:      function(id)  { return _crudGet(id, endpointUrl, objectKey, cache, _getData);                         },
-      save:     function(elt) { return _crudSave(elt, endpointUrl, objectKey, cache, _getData, _processBreforeSave);  },
-      remove:   function(elt) { return _crudRemove(elt, endpointUrl, objectKey, cache);                               }
+      getUrl:   function(_id)           { return _crudGetUrl(endpointUrl, _id);                                                 },
+      getAll:   function(_noCache)      { return _crudGetAll(endpointUrl, objectKey, cache, _noCache, _getData);                },
+      get:      function(id, _noCache)  { return _crudGet(id, endpointUrl, objectKey, cache, _noCache, _getData);               },
+      save:     function(elt)           { return _crudSave(elt, endpointUrl, objectKey, cache, _getData, _processBreforeSave);  },
+      remove:   function(elt)           { return _crudRemove(elt, endpointUrl, objectKey, cache);                               }
     };
+    if(cache != null){
+      CrudSrv.cache = cache;
+    }
     return CrudSrv;
   }
 
@@ -38,7 +40,7 @@ angular.module('app')
   function createCrudCtrl(title, header, CrudSrv, _defaultSort, _defaultFormElt){
     var data = {
       header:         header,
-      elts:           CrudSrv.cache ? angular.copy(CrudSrv.cache) : [],
+      elts:           [],
       currentSort:    _defaultSort ? _defaultSort : {},
       selectedElt:    null,
       defaultFormElt: _defaultFormElt ? _defaultFormElt : {},
@@ -74,38 +76,57 @@ angular.module('app')
   function _crudGetUrl(endpointUrl, _id){
     return endpointUrl+(_id ? '/'+_id : '');
   }
+  function _crudConfig(_cache){
+    var cfg = {};
+    if(_cache){
+      cfg.cache = _cache;
+    }
+    return cfg;
+  }
+  function _setInCache(_cache, endpointUrl, objectKey, result, elt){
+    if(_cache){
+      _cache.put(_crudGetUrl(endpointUrl, elt[objectKey]), [result.status, JSON.stringify(elt), result.headers(), result.statusText]);
+    }
+  }
 
-  function _crudGetAll(endpointUrl, cache, _getData){
-    return $http.get(_crudGetUrl(endpointUrl)).then(function(res){
+  function _crudGetAll(endpointUrl, objectKey, _cache, _noCache, _getData){
+    var url = _crudGetUrl(endpointUrl);
+    if(_cache && _noCache){ _cache.remove(url); }
+    return $http.get(url, _crudConfig(_cache)).then(function(result){
       var elts;
       if(typeof _getData === 'function'){
-        elts = _getData(res);
-      } else if(res && res.data){
-        elts = res.data.data ? res.data.data : res.data;
+        elts = _getData(result);
+      } else if(result && result.data){
+        elts = result.data.data ? result.data.data : result.data;
       }
       if(Array.isArray(elts)){
-        CollectionUtils.copy(elts, cache);
+        if(_cache){ // add all individual elements to cache !
+          for(var i in elts){
+            _setInCache(_cache, endpointUrl, objectKey, result, elts[i]);
+          }
+        }
         return elts;
       }
     });
   }
 
-  function _crudGet(id, endpointUrl, objectKey, cache, _getData){
-    return $http.get(_crudGetUrl(endpointUrl, id)).then(function(res){
+  function _crudGet(id, endpointUrl, objectKey, _cache, _noCache, _getData){
+    var url = _crudGetUrl(endpointUrl, id);
+    if(_cache && _noCache){ _cache.remove(url); }
+    return $http.get(url, _crudConfig(_cache)).then(function(result){
       var elt;
       if(typeof _getData === 'function'){
-        elt = _getData(res);
-      } else if(res && res.data){
-        elt = res.data.data ? res.data.data : res.data;
+        elt = _getData(result);
+      } else if(result && result.data){
+        elt = result.data.data ? result.data.data : result.data;
       }
       if(elt && elt[objectKey]){
-        CollectionUtils.upsertEltBy(cache, elt, objectKey);
         return elt;
       }
     });
   }
 
-  function _crudSave(elt, endpointUrl, objectKey, cache, _getData, _processBreforeSave){
+  function _crudSave(elt, endpointUrl, objectKey, _cache, _getData, _processBreforeSave){
     if(elt){
       if(typeof _processBreforeSave === 'function'){ _processBreforeSave(elt); }
       var promise = null;
@@ -114,19 +135,19 @@ angular.module('app')
       } else { // create
         promise = $http.post(_crudGetUrl(endpointUrl), elt);
       }
-      return promise.then(function(res){
+      return promise.then(function(result){
         var elt;
         if(typeof _getData === 'function'){
-          elt = _getData(res);
-        } else if(res && res.data){
-          elt = res.data.data ? res.data.data : res.data;
+          elt = _getData(result);
+        } else if(result && result.data){
+          elt = result.data.data ? result.data.data : result.data;
         }
         if(elt && elt[objectKey]){
-          CollectionUtils.upsertEltBy(cache, elt, objectKey);
+          _setInCache(_cache, endpointUrl, objectKey, result, elt);
           return elt;
         } else {
-          if(res && res.data && res.data.message){
-            return $q.reject(res.data.message);
+          if(result && result.data && result.data.message){
+            return $q.reject(result.data.message);
           } else {
             return $q.reject();
           }
@@ -137,11 +158,12 @@ angular.module('app')
     }
   }
 
-  function _crudRemove(elt, endpointUrl, objectKey, cache){
+  function _crudRemove(elt, endpointUrl, objectKey, _cache){
     if(elt && elt[objectKey]){
-      return $http.delete(_crudGetUrl(endpointUrl, elt[objectKey])).then(function(res){
+      var url = _crudGetUrl(endpointUrl, elt[objectKey]);
+      return $http.delete(url).then(function(res){
         if(res && res.data){
-          CollectionUtils.removeEltBy(cache, elt, objectKey);
+          if(_cache){ _cache.remove(url); }
           return res.data;
         }
       });

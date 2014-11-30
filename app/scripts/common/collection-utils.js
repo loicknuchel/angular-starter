@@ -3,19 +3,19 @@ angular.module('app')
 .factory('CollectionUtils', function(){
   'use strict';
   var service = {
-    clear: clear,
-    copy: copy,
-    updateElt: updateElt,
-    upsertElt: upsertElt,
-    removeElt: removeElt,
-    updateEltBy: updateEltBy,
-    upsertEltBy: upsertEltBy,
-    removeEltBy: removeEltBy,
-    toMap: toMap,
-    toArray: toArray,
-    size: size,
-    isEmpty: isEmpty,
-    isNotEmpty: function(col){return !isEmpty(col);}
+    clear: clear,                                     // (col)                            empty collection without loosing reference
+    copy: copy,                                       // (srcCol, destCol)                copy srcCol to destCol without loosing reference
+    updateElt: updateElt,                             // (collection, selector, elt)      update the first elt matching the selector in collection with the provided elt
+    upsertElt: upsertElt,                             // (collection, selector, key, elt) same as updateElt but create elt if it does not exists
+    removeElt: removeElt,                             // (collection, selector)           remove all elts matching the selector in collection
+    updateEltBy: updateEltBy,                         // (collection, elt, keyAttr)       same as updateElt but with a selector based on an elt property (ex: id)
+    upsertEltBy: upsertEltBy,                         // (collection, elt, keyAttr)       same as upsertElt but with a selector based on an elt property (ex: id)
+    removeEltBy: removeEltBy,                         // (collection, elt, keyAttr)       same as removeElt but with a selector based on an elt property (ex: id)
+    toMap: toMap,                                     // (arr)                            transform an array to a map (new object)
+    toArray: toArray,                                 // (map)                            transform a map to an array (new object)
+    size: size,                                       // (col)                            size of collection
+    isEmpty: isEmpty,                                 // (col)                            is collection empty
+    isNotEmpty: function(col){return !isEmpty(col);}  // (col)                            is collection not empty
   };
 
   function clear(col){
@@ -28,12 +28,10 @@ angular.module('app')
     }
   }
 
-  function copy(src, dest){
-    if(Array.isArray(dest)){
-      clear(dest);
-      for(var i in src){
-        dest.push(src[i]);
-      }
+  function copy(srcCol, destCol){
+    clear(destCol);
+    for(var i in srcCol){
+      destCol[i] = angular.copy(srcCol[i]);
     }
   }
 
@@ -86,8 +84,8 @@ angular.module('app')
     return map;
   }
 
-  function toArray(map, addTo){
-    var arr = addTo ? addTo : [];
+  function toArray(map){
+    var arr = [];
     for(var i in map){
       map[i].id = i;
       arr.push(map[i]);

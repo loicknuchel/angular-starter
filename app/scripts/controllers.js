@@ -55,6 +55,7 @@ angular.module('app')
   var defaultSort = {order: 'done', desc: true};
   var defaultFormElt = {done: false};
   $scope.crud = CrudRestUtils.createCrudCtrl('Tasks', null, TaskSrv, defaultSort, defaultFormElt);
+  $scope.cache = TaskSrv.cache;
 })
 
 

@@ -12,60 +12,68 @@ angular.module('app')
     parseCredentials.restApiKey = restApiKey;
   };
 
-  this.$get = ['$http', '$q', 'CollectionUtils', function($http, $q, CollectionUtils){
+  this.$get = ['$http', '$q', '$cacheFactory', function($http, $q, $cacheFactory){
     var service = {
       createCrud: createCrud
     };
 
-    function createCrud(objectUrl, _processBreforeSave){
+    function createCrud(objectUrl, _processBreforeSave, _useCache){
       var objectKey = 'objectId';
-      var cache = [];
+      var cache = _useCache ? $cacheFactory(objectUrl) : null;
       var CrudSrv = {
-        cache:    cache,
         eltKey:   objectKey,
-        getUrl:   function(_id) { return _parseUrl(objectUrl, _id);                                         },
-        getAll:   function()    { return _crudGetAll(objectUrl, cache);                                     },
-        get:      function(id)  { return _crudGet(id, objectUrl, objectKey, cache);                         },
-        save:     function(elt) { return _crudSave(elt, objectUrl, objectKey, cache, _processBreforeSave);  },
-        remove:   function(elt) { return _crudRemove(elt, objectUrl, objectKey, cache);                     }
+        getUrl:   function(_id)           { return _parseUrl(objectUrl, _id);                                         },
+        getAll:   function(_noCache)      { return _crudGetAll(objectUrl, objectKey, cache, _noCache);                },
+        get:      function(id, _noCache)  { return _crudGet(id, objectUrl, objectKey, cache, _noCache);               },
+        save:     function(elt)           { return _crudSave(elt, objectUrl, objectKey, _processBreforeSave, cache);  },
+        remove:   function(elt)           { return _crudRemove(elt, objectUrl, objectKey, cache);                     }
       };
+      if(cache != null){
+        CrudSrv.cache = cache;
+      }
       return CrudSrv;
     }
 
 
-    function _crudGetAll(objectUrl, cache){
-      return _parseGet(objectUrl).then(function(elts){
+    function _crudGetAll(objectUrl, objectKey, _cache, _noCache){
+      var url = _parseUrl(objectUrl);
+      if(_cache && _noCache){ _cache.remove(url); }
+      return $http.get(url, _parseConfig(_cache)).then(function(result){
+        var elts = result.data.results;
         if(Array.isArray(elts)){
-          CollectionUtils.copy(elts, cache);
+          if(_cache){ // add all individual elements to cache !
+            for(var i in elts){
+              _setInCache(_cache, objectUrl, objectKey, result, elts[i]);
+            }
+          }
           return elts;
         }
       });
     }
 
-    function _crudGet(id, objectUrl, objectKey, cache){
-      return _parseGet(objectUrl, id).then(function(elt){
-        if(elt && elt.id){
-          CollectionUtils.upsertEltBy(cache, elt, objectKey);
-          return elt;
+    function _crudGet(id, objectUrl, objectKey, _cache, _noCache){
+      var url = _parseUrl(objectUrl, id);
+      if(_cache && _noCache){ _cache.remove(url); }
+      return $http.get(url, _parseConfig(_cache)).then(function(result){
+        if(result.data && result.data[objectKey]){
+          return result.data;
         }
       });
     }
 
-    function _crudSave(elt, objectUrl, objectKey, cache, _processBreforeSave){
+    function _crudSave(elt, objectUrl, objectKey, _processBreforeSave, _cache){
       if(elt){
         if(typeof _processBreforeSave === 'function'){ _processBreforeSave(elt); }
         var promise = null;
         if(elt[objectKey]){ // update
-          promise = _parsePut(objectUrl, elt[objectKey], elt);
+          promise = $http.put(_parseUrl(objectUrl, elt[objectKey]), elt, _parseConfig());
         } else { // create
-          promise = _parsePost(objectUrl, elt);
+          promise = $http.post(_parseUrl(objectUrl), elt, _parseConfig());
         }
-        return promise.then(function(createdObjectId){
+        return promise.then(function(result){
           var newElt = angular.copy(elt);
-          if(!newElt[objectKey]){
-            newElt[objectKey] = createdObjectId;
-          }
-          CollectionUtils.upsertEltBy(cache, newElt, objectKey);
+          if(!newElt[objectKey] && result.data[objectKey]){ newElt[objectKey] = result.data[objectKey]; }
+          _setInCache(_cache, objectUrl, objectKey, result, newElt);
           return newElt;
         });
       } else {
@@ -73,10 +81,12 @@ angular.module('app')
       }
     }
 
-    function _crudRemove(elt, objectUrl, objectKey, cache){
+    function _crudRemove(elt, objectUrl, objectKey, _cache){
       if(elt && elt[objectKey]){
-        return _parseDelete(objectUrl, elt[objectKey]).then(function(){
-          CollectionUtils.removeEltBy(cache, elt, objectKey);
+        var url = _parseUrl(objectUrl, elt[objectKey]);
+        return $http.delete(url, _parseConfig()).then(function(result){
+          if(_cache){ _cache.remove(url); }
+          // return nothing
         });
       } else {
         return $q.when();
@@ -84,48 +94,25 @@ angular.module('app')
     }
 
 
-    function _parseGet(objectUrl, _id){
-      return $http.get(_parseUrl(objectUrl, _id), {
-        headers: {
-          'X-Parse-Application-Id': parseCredentials.applicationId,
-          'X-Parse-REST-API-Key': parseCredentials.restApiKey
-        }
-      }).then(function(result){
-        return _id ? result.data : result.data.results;
-      });
-    }
-    function _parsePost(objectUrl, elt){
-      return $http.post(_parseUrl(objectUrl), elt, {
-        headers: {
-          'X-Parse-Application-Id': parseCredentials.applicationId,
-          'X-Parse-REST-API-Key': parseCredentials.restApiKey
-        }
-      }).then(function(result){
-        return result.data.objectId;
-      });
-    }
-    function _parsePut(objectUrl, id, elt){
-      return $http.put(_parseUrl(objectUrl, id), elt, {
-        headers: {
-          'X-Parse-Application-Id': parseCredentials.applicationId,
-          'X-Parse-REST-API-Key': parseCredentials.restApiKey
-        }
-      }).then(function(result){
-        // return nothing
-      });
-    }
-    function _parseDelete(objectUrl, id){
-      return $http.delete(_parseUrl(objectUrl, id), {
-        headers: {
-          'X-Parse-Application-Id': parseCredentials.applicationId,
-          'X-Parse-REST-API-Key': parseCredentials.restApiKey
-        }
-      }).then(function(result){
-        // return nothing
-      });
-    }
     function _parseUrl(objectUrl, _id){
       return 'https://api.parse.com/1'+objectUrl+(_id ? '/'+_id : '');
+    }
+    function _parseConfig(_cache){
+      var cfg = {
+        headers: {
+          'X-Parse-Application-Id': parseCredentials.applicationId,
+          'X-Parse-REST-API-Key': parseCredentials.restApiKey
+        }
+      };
+      if(_cache){
+        cfg.cache = _cache;
+      }
+      return cfg;
+    }
+    function _setInCache(_cache, objectUrl, objectKey, result, elt){
+      if(_cache){
+        _cache.put(_parseUrl(objectUrl, elt[objectKey]), [result.status, JSON.stringify(elt), result.headers(), result.statusText]);
+      }
     }
 
     return service;
