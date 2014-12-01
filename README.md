@@ -9,6 +9,7 @@ With this template you will have :
 
 - a login system already setted (see [AuthSrv](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/services.js))
 - an advanced logging & tracking errors system (see [_log.js](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/_log.js))
+- CRUD helper for standard REST webservices & [Parse](https://parse.com/)
 - many helpers such as [filters for dates](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/filters.js), [crud builders](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/common/crud-rest-utils.js), [storage helpers](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/common/storage.js) and many more...
 - usefull libs already included :
     - [moment](http://momentjs.com/) for date manipulation
@@ -28,7 +29,7 @@ With this template you will have :
 ## TODO
 
 - create some directive to create charts with highcharts
-- create some utils for Parse & Firebase
+- create some utils for Firebase
 - live exemple en github pages
 
 ## Feedback

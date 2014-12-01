@@ -56,7 +56,18 @@ angular.module('app')
    * TODO : add many different field types (for exemple) :
    *  - priority (select with predefined values)
    *  - dueDate (datetime picker)
+   *    - https://github.com/dalelotts/angular-bootstrap-datetimepicker
+   *    - http://mgcrea.github.io/angular-strap/##datepickers (http://www.eyecon.ro/bootstrap-datepicker/)
+   *    - https://github.com/alongubkin/angular-datepicker
+   *    - https://github.com/adamalbrecht/ngQuickDate or https://github.com/killercodemonkey/ngDatePicker
+   *    - https://github.com/g00fy-/angular-datepicker
+   *    - https://github.com/luisfarzati/ng-bs-daterangepicker
+   *    - https://github.com/spongessuck/gm.datepickermultiselect
    *  - color (colorpicker)
+   *    - https://github.com/buberdds/angular-bootstrap-colorpicker
+   *    - https://github.com/kaihenzler/angular-minicolors
+   *    - https://github.com/Jimdo/angular-spectrum-colorpicker
+   *    - https://github.com/flaute/bootstrap-colorselector
    */
   var defaultSort = {order: 'done', desc: true};
   var defaultFormElt = {done: false};
