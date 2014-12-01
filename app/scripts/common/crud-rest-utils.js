@@ -78,9 +78,10 @@ angular.module('app')
     return cfg;
   }
   function _setInCache(_cache, endpointUrl, objectKey, result, elt){
-    if(_cache){
-      _cache.put(_crudGetUrl(endpointUrl, elt[objectKey]), [result.status, JSON.stringify(elt), result.headers(), result.statusText]);
-    }
+    if(_cache){ _cache.put(_crudGetUrl(endpointUrl, elt[objectKey]), [result.status, JSON.stringify(elt), result.headers(), result.statusText]); }
+  }
+  function _invalideAllCache(_cache, endpointUrl){
+    if(_cache){ _cache.remove(_crudGetUrl(endpointUrl)); }
   }
 
   function _crudGetAll(endpointUrl, objectKey, _cache, _noCache, _getData, _httpConfig){
@@ -124,6 +125,7 @@ angular.module('app')
         var newElt = angular.copy(elt);
         if(!newElt[objectKey] && data[objectKey]){ newElt[objectKey] = data[objectKey]; }
         _setInCache(_cache, endpointUrl, objectKey, result, newElt);
+        _invalideAllCache(_cache, endpointUrl);
         return newElt;
       });
     } else {
@@ -135,7 +137,10 @@ angular.module('app')
     if(elt && elt[objectKey]){
       var url = _crudGetUrl(endpointUrl, elt[objectKey]);
       return $http.delete(url, _crudConfig(null, _httpConfig)).then(function(result){
-        if(_cache){ _cache.remove(url); }
+        if(_cache){
+          _cache.remove(url);
+          _invalideAllCache(_cache, endpointUrl);
+        }
       });
     } else {
       return $q.when();
