@@ -20,7 +20,7 @@ With this template you will have :
 
 ## Getting started
 
-- clone the repo `git clone git@github.com:loicknuchel/angularjs-dashboard.git`
+- clone the repo `git clone git@github.com:loicknuchel/angular-dashboard.git`
 - go to project folder `cd angularjs-dashboard`
 - run `npm install`
 - run `bower install`
