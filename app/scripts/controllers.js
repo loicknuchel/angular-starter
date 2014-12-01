@@ -56,7 +56,6 @@ angular.module('app')
    * TODO : add many different field types (for exemple) :
    *  - priority (select with predefined values)
    *  - dueDate (datetime picker)
-   *  - description (textarea with markdown editor)
    *  - color (colorpicker)
    */
   var defaultSort = {order: 'done', desc: true};

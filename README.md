@@ -10,7 +10,11 @@ With this template you will have :
 - a login system already setted (see [AuthSrv](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/services.js))
 - an advanced logging & tracking errors system (see [_log.js](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/_log.js))
 - many helpers such as [filters for dates](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/filters.js), [crud builders](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/common/crud-rest-utils.js), [storage helpers](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/common/storage.js) and many more...
-- usefull libs already included : [moment](http://momentjs.com/) (date manipulation lib), [lodash](http://lodash.com/) (functionnal utility helpers) are included, [localForage](https://github.com/mozilla/localForage)
+- usefull libs already included :
+    - [moment](http://momentjs.com/) for date manipulation
+    - [lodash](http://lodash.com/) for functionnal utility helpers on collections
+    - [localForage](https://github.com/mozilla/localForage) for async browser storage
+    - [ngQuill](https://github.com/KillerCodeMonkey/ngQuill) text editor (alternatives: [textAngular](http://textangular.com/), [angular-meditor](https://github.com/ghinda/angular-meditor), [angular-redactor](https://github.com/TylerGarlick/angular-redactor))
 
 ## Getting started
 
