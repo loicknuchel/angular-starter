@@ -63,11 +63,6 @@ angular.module('app')
    *    - https://github.com/g00fy-/angular-datepicker
    *    - https://github.com/luisfarzati/ng-bs-daterangepicker
    *    - https://github.com/spongessuck/gm.datepickermultiselect
-   *  - color (colorpicker)
-   *    - https://github.com/buberdds/angular-bootstrap-colorpicker
-   *    - https://github.com/kaihenzler/angular-minicolors
-   *    - https://github.com/Jimdo/angular-spectrum-colorpicker
-   *    - https://github.com/flaute/bootstrap-colorselector
    */
   var defaultSort = {order: 'done', desc: true};
   var defaultFormElt = {done: false};

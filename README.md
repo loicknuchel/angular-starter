@@ -16,6 +16,7 @@ With this template you will have :
     - [lodash](http://lodash.com/) for functionnal utility helpers on collections
     - [localForage](https://github.com/mozilla/localForage) for async browser storage
     - [ngQuill](https://github.com/KillerCodeMonkey/ngQuill) text editor (alternatives: [textAngular](http://textangular.com/), [angular-meditor](https://github.com/ghinda/angular-meditor), [angular-redactor](https://github.com/TylerGarlick/angular-redactor))
+    - [angular-bootstrap-colorpicker](https://github.com/buberdds/angular-bootstrap-colorpicker) (alternatives: [angular-minicolors](https://github.com/kaihenzler/angular-minicolors), [angular-spectrum-colorpicker](https://github.com/Jimdo/angular-spectrum-colorpicker), [bootstrap-colorselector](https://github.com/flaute/bootstrap-colorselector))
 
 ## Getting started
 
