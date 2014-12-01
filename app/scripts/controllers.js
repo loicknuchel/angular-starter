@@ -72,10 +72,6 @@ angular.module('app')
   $scope.data = data;
 
   /*
-   * Editor :
-   *  - http://imperavi.com/redactor/ with https://github.com/TylerGarlick/angular-redactor
-   *  - http://textangular.com/
-   *  - https://github.com/ghinda/angular-meditor
    * Alerts :
    *  - http://lipis.github.io/bootstrap-sweetalert/
    * Notifications :
