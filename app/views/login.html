@@ -1,26 +1,106 @@
 <div class="col-md-4 col-md-offset-4">
-  <div class="panel panel-default">
-    <div class="panel-heading"><h3 class="panel-title">Cookers admin - Sign In</h3></div>
+  <div class="panel panel-default login-panel">
+    <div class="panel-heading"><h3 class="panel-title">Angular Dashboard - Log In</h3></div>
     <div class="panel-body">
-      <form role="form" ng-submit="login()">
+      <div class="row socialButtons">
+        <div class="col-md-4">
+          <a href="#" class="btn btn-lg btn-block btn-facebook">
+            <i class="fa fa-facebook visible-xs"></i>
+            <span class="hidden-xs">Facebook</span>
+          </a>
+        </div>
+        <div class="col-md-4">
+          <a class="btn btn-lg btn-block btn-twitter">
+            <i class="fa fa-twitter visible-xs"></i>
+            <span class="hidden-xs">Twitter</span>
+          </a>
+        </div>
+        <div class="col-md-4">
+          <a class="btn btn-lg btn-block btn-google">
+            <i class="fa fa-google-plus visible-xs"></i>
+            <span class="hidden-xs">Google+</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="row loginOr">
+        <div class="col-md-12">
+          <hr class="hrOr">
+          <span class="spanOr">or</span>
+        </div>
+      </div>
+
+      <form role="form" ng-submit="fn.login()" ng-show="data.status.form === 'login'">
         <div class="form-group">
-          <label for="emailInput">Email</label>
-          <input type="email" name="email" id="emailInput" class="form-control" ng-model="credentials.email" placeholder="Enter email" required>
+          <label for="emailInput">Email :</label>
+          <div class="input-group">
+            <span class="input-group-addon">@</span>
+            <input type="email" name="email" id="emailInput" class="form-control" ng-model="data.credentials.email" placeholder="email address" required>
+          </div>
         </div>
         <div class="form-group">
-          <label for="passwordInput">Password</label>
-          <input type="password" name="password" id="passwordInput" class="form-control" ng-model="credentials.password" placeholder="Password" required>
+          <a class="pull-right" ng-click="data.status.form = 'recover'">Forgot password?</a>
+          <label for="passwordInput">Password :</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+            <input type="password" name="password" id="passwordInput" class="form-control" ng-model="data.credentials.password" placeholder="Password" required>
+          </div>
         </div>
         <div class="form-group">
-          <span class="help-block">Any email/password will let you sign in.</span>
+          <span class="help-block">Every email/password will log you in !</span>
         </div>
-        <div class="form-group has-error" ng-if="credentials.error">
-          <span class="help-block">{{credentials.error}}</span>
+        <div class="form-group has-error" ng-if="data.status.error">
+          <span class="help-block">{{data.status.error}}</span>
         </div>
-        <button type="submit" class="btn btn-sm btn-default" ng-disabled="credentials.loading">
-          <i class="fa fa-spinner fa-spin" ng-if="credentials.loading"></i>
-          Sign in
-        </button>
+        <loading-button btn-class="btn-lg btn-primary btn-block" btn-type="submit" btn-loading="data.status.loading">Log In</loading-button>
+        <div class="signUp pull-right">Don't have an account ? <a ng-click="data.status.form = 'signup'">Sign up!</a></div>
+        <div class="clearfix"></div>
+      </form>
+
+      <form role="form" ng-submit="fn.recover()" ng-show="data.status.form === 'recover'">
+        <h4>Forgot your password?</h4>
+        <span class="help-block">
+          Email address you use to log in to your account
+          <br>
+          We'll send you an email with instructions to choose a new password.
+        </span>
+        <div class="form-group">
+          <label for="emailInput">Email :</label>
+          <div class="input-group">
+            <span class="input-group-addon">@</span>
+            <input type="email" name="email" id="emailInput" class="form-control" ng-model="data.credentials.email" placeholder="email address" required>
+          </div>
+        </div>
+        <div class="form-group has-error" ng-if="data.status.error">
+          <span class="help-block">{{data.status.error}}</span>
+        </div>
+        <div class="form-group has-success" ng-if="data.status.success">
+          <span class="help-block">{{data.status.success}}</span>
+        </div>
+        <loading-button btn-class="btn-lg btn-primary btn-block" btn-type="submit" btn-loading="data.status.loading">Continue</loading-button>
+        <div class="signUp">&lt;= <a ng-click="data.status.form = 'login'">Retour</a></div>
+      </form>
+
+      <form role="form" ng-submit="fn.signup()" ng-show="data.status.form === 'signup'">
+        <div class="form-group">
+          <label for="emailInput">Email :</label>
+          <div class="input-group">
+            <span class="input-group-addon">@</span>
+            <input type="email" name="email" id="emailInput" class="form-control" ng-model="data.credentials.email" placeholder="email address" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="passwordInput">Password :</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+            <input type="password" name="password" id="passwordInput" class="form-control" ng-model="data.credentials.password" placeholder="Password" required>
+          </div>
+        </div>
+        <div class="form-group has-error" ng-if="data.status.error">
+          <span class="help-block">{{data.status.error}}</span>
+        </div>
+        <loading-button btn-class="btn-lg btn-success btn-block" btn-type="submit" btn-loading="data.status.loading">Sign Up</loading-button>
+        <div class="signUp">&lt;= <a ng-click="data.status.form = 'login'">Retour</a></div>
       </form>
     </div>
   </div>

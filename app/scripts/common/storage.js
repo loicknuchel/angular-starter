@@ -8,24 +8,25 @@ angular.module('app')
     set: _set,
     remove: _remove,
     clear: _clear,
-    clearStartingWith: _clearStartingWith
+    clearStartingWith: _clearStartingWith,
+    getSync: _getSync
   };
 
-  function _get(key, defaultValue){
+  function _get(key, _defaultValue){
     if(!storageCache[key]){
       if(Config.storage){
         return $localForage.getItem(Config.storagePrefix+key).then(function(value){
           try {
-            storageCache[key] = JSON.parse(value) || angular.copy(defaultValue);
+            storageCache[key] = JSON.parse(value) || angular.copy(_defaultValue);
           } catch(e) {
-            storageCache[key] = angular.copy(defaultValue);
+            storageCache[key] = angular.copy(_defaultValue);
           }
           return angular.copy(storageCache[key]);
         }, function(err){
           console.error('ERROR in LocalForageUtils._get('+key+')', err);
         });
       } else {
-        storageCache[key] = angular.copy(defaultValue);
+        storageCache[key] = angular.copy(_defaultValue);
         return $q.when(angular.copy(storageCache[key]));
       }
     } else {
@@ -33,11 +34,18 @@ angular.module('app')
     }
   }
 
-  function _set(key, value){
-    if(key === 'user' && value && value.id && $window.localStorage && Config.storage){ // for the _log.js...
-      $window.localStorage.setItem(Config.storagePrefix+key, JSON.stringify({id: value.id}));
+  function _getSync(key, _defaultValue, _callback){
+    if(!storageCache[key]){
+      _get(key, _defaultValue).then(function(value){
+        _callback(value);
+      });
+      return angular.copy(_defaultValue);
+    } else {
+      return angular.copy(storageCache[key]);
     }
+  }
 
+  function _set(key, value){
     if(!angular.equals(storageCache[key], value)){
       storageCache[key] = angular.copy(value);
       if(Config.storage){
@@ -105,7 +113,7 @@ angular.module('app')
   'use strict';
   var storageCache = {};
   var service = {
-    get:                function(key, defaultValue) { return Utils.async(_get(key, defaultValue));          },
+    get:                function(key, _defaultValue) { return Utils.async(_get(key, _defaultValue));        },
     set:                function(key, value)        { return Utils.async(_set(key, value));                 },
     remove:             function(key)               { return Utils.async(_remove(key));                     },
     clear:              function()                  { return Utils.async(_clear());                         },
@@ -118,17 +126,17 @@ angular.module('app')
   };
 
 
-  function _get(key, defaultValue){
+  function _get(key, _defaultValue){
     if(!storageCache[key]){
       if(Config.storage && $window.localStorage){
         try {
-          storageCache[key] = JSON.parse($window.localStorage.getItem(Config.storagePrefix+key)) || angular.copy(defaultValue);
+          storageCache[key] = JSON.parse($window.localStorage.getItem(Config.storagePrefix+key)) || angular.copy(_defaultValue);
         } catch(e) {
-          storageCache[key] = angular.copy(defaultValue);
+          storageCache[key] = angular.copy(_defaultValue);
         }
         return angular.copy(storageCache[key]);
       } else {
-        storageCache[key] = angular.copy(defaultValue);
+        storageCache[key] = angular.copy(_defaultValue);
         return angular.copy(storageCache[key]);
       }
     } else {

@@ -2,22 +2,55 @@ angular.module('app')
 
 .controller('LoginCtrl', function ($scope, $state, AuthSrv){
   'use strict';
-  $scope.credentials = {
+  var data = {}, fn = {};
+  $scope.data = data;
+  $scope.fn = fn;
+
+  data.credentials = {
     email: '',
-    password: '',
+    password: ''
+  };
+  data.status = {
+    form: 'login',
     loading: false,
-    error: ''
+    error: '',
+    success: ''
   };
 
-  $scope.login = function(){
-    $scope.credentials.loading = true;
-    AuthSrv.login($scope.credentials).then(function(user){
-      $scope.credentials.loading = false;
+
+  fn.login = function(){
+    data.status.loading = true;
+    data.status.error = '';
+    AuthSrv.login(data.credentials).then(function(user){
+      data.status.loading = false;
       $state.go('user.home');
     }, function(error){
-      $scope.credentials.password = '';
-      $scope.credentials.loading = false;
-      $scope.credentials.error = error.message;
+      data.credentials.password = '';
+      data.status.loading = false;
+      data.status.error = error.message;
+    });
+  };
+  fn.recover = function(){
+    data.status.loading = true;
+    data.status.error = '';
+    AuthSrv.passwordRecover(data.credentials).then(function(){
+      data.status.loading = false;
+      data.status.success = 'Check your inbox for password recovery !';
+    }, function(error){
+      data.status.loading = false;
+      data.status.error = error.message;
+    });
+  };
+  fn.signup = function(){
+    data.status.loading = true;
+    data.status.error = '';
+    AuthSrv.signup(data.credentials).then(function(user){
+      data.status.loading = false;
+      $state.go('user.home');
+    }, function(error){
+      data.credentials.password = '';
+      data.status.loading = false;
+      data.status.error = error.message;
     });
   };
 })

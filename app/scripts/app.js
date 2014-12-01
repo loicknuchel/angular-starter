@@ -130,23 +130,23 @@ angular.module('app', ['ngCookies', 'LocalForageModule', 'ui.router', 'ui.bootst
       LogSrv.trackError('NoAccessRestrictionForState', 'State <'+toState.name+'> has no access data !!!');
       event.preventDefault();
     } else {
-      AuthSrv.isAuthorized(toState.data.access).then(function(authorized){
-        if(!authorized){
-          LogSrv.trackError('UnauthorizedUser', 'User tried to access <'+toState.name+'> state with no authorization !!!');
-          event.preventDefault();
+      if(!AuthSrv.isAuthorized(toState.data.access)){
+        AuthSrv.isAuthorizedAsync(toState.data.access).then(function(authorized){
+          if(!authorized){
+            LogSrv.trackError('UnauthorizedUser', 'User tried to access <'+toState.name+'> state with no authorization !!!');
+            event.preventDefault();
 
-          if(fromState.url === '^'){
-            AuthSrv.isLoggedIn().then(function(logged){
-              if(logged){
+            if(fromState.url === '^'){
+              if(AuthSrv.isLoggedIn()){
                 $state.go('user.home');
               } else {
                 $rootScope.error = null;
                 $state.go('anon.login');
               }
-            });
+            }
           }
-        }
-      });
+        });
+      }
     }
   });
 

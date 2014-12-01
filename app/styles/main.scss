@@ -15,6 +15,7 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/
 @import "dashboard/_sidebar";
 @import "dashboard/_widgets";
 @import "dashboard/_hamburg";
+@import "_login";
 
 [ng-click], [ui-sref] {
   cursor: pointer;
