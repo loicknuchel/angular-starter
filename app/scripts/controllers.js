@@ -52,9 +52,16 @@ angular.module('app')
 
 .controller('ParseCtrl', function($scope, TaskSrv, CrudRestUtils){
   'use strict';
+  /*
+   * TODO : add many different field types (for exemple) :
+   *  - priority (select with predefined values)
+   *  - dueDate (datetime picker)
+   *  - description (textarea with markdown editor)
+   *  - color (colorpicker)
+   */
   var defaultSort = {order: 'done', desc: true};
   var defaultFormElt = {done: false};
-  $scope.crud = CrudRestUtils.createCrudCtrl('Tasks', null, TaskSrv, defaultSort, defaultFormElt);
+  $scope.crud = CrudRestUtils.createCrudCtrl(TaskSrv, defaultSort, defaultFormElt);
   $scope.cache = TaskSrv.cache;
 })
 

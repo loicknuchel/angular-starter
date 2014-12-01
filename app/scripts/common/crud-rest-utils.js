@@ -26,18 +26,14 @@ angular.module('app')
       save:     function(elt)           { return _crudSave(elt, endpointUrl, objectKey, cache, _processBreforeSave, _getData, _httpConfig); },
       remove:   function(elt)           { return _crudRemove(elt, endpointUrl, objectKey, cache, _httpConfig);                              }
     };
-    if(cache != null){
-      CrudSrv.cache = cache;
-    }
     return CrudSrv;
   }
 
   /*
    * Create data and functions to use in crud controller, based on a CrudSrv
    */
-  function createCrudCtrl(title, header, CrudSrv, _defaultSort, _defaultFormElt){
+  function createCrudCtrl(CrudSrv, _defaultSort, _defaultFormElt){
     var data = {
-      header:         header,
       elts:           [],
       currentSort:    _defaultSort ? _defaultSort : {},
       selectedElt:    null,
@@ -53,20 +49,20 @@ angular.module('app')
     var ctrl = {
       data: data,
       fn: {
-        sort:       function(order, _desc)    { _ctrlSort(order, _desc, data);                  },
-        toggle:     function(elt)             { _ctrlToggle(elt, CrudSrv, data);                },
-        create:     function()                { _ctrlCreate(data);                              },
-        edit:       function(elt)             { _ctrlEdit(elt, data);                           },
-        addElt:     function(obj, attr, _elt) { _ctrlAddElt(obj, attr, _elt);                   },
-        removeElt:  function(arr, index)      { _ctrlRemoveElt(arr, index);                     },
-        cancelEdit: function()                { _ctrlCancelEdit(data);                          },
-        save:       function(_elt)            { return _ctrlSave(_elt, CrudSrv, data, title);   },
-        remove:     function(elt)             { return _ctrlRemove(elt, CrudSrv, data, title);  },
-        eltRestUrl: function(_elt)            { return _ctrlEltRestUrl(_elt, CrudSrv);          }
+        sort:       function(order, _desc)    { _ctrlSort(order, _desc, data);          },
+        toggle:     function(elt)             { _ctrlToggle(elt, CrudSrv, data);        },
+        create:     function()                { _ctrlCreate(data);                      },
+        edit:       function(elt)             { _ctrlEdit(elt, data);                   },
+        addElt:     function(obj, attr, _elt) { _ctrlAddElt(obj, attr, _elt);           },
+        removeElt:  function(arr, index)      { _ctrlRemoveElt(arr, index);             },
+        cancelEdit: function()                { _ctrlCancelEdit(data);                  },
+        save:       function(_elt)            { return _ctrlSave(_elt, CrudSrv, data);  },
+        remove:     function(elt)             { return _ctrlRemove(elt, CrudSrv, data); },
+        eltRestUrl: function(_elt)            { return _ctrlEltRestUrl(_elt, CrudSrv);  }
       }
     };
 
-    _ctrlInit(CrudSrv, data, title, _defaultSort);
+    _ctrlInit(CrudSrv, data, _defaultSort);
     return ctrl;
   }
 
@@ -146,19 +142,17 @@ angular.module('app')
     }
   }
 
-  function _ctrlInit(CrudSrv, data, title, _defaultSort){
-    if(data.header){ data.header.title = title+' ('+data.elts.length+')'; }
+  function _ctrlInit(CrudSrv, data, _defaultSort){
     if(_defaultSort){Utils.sort(data.elts, _defaultSort);}
 
     CrudSrv.getAll().then(function(elts){
-      if(data.header){ data.header.title = title+' ('+elts.length+')'; }
       if(data.currentSort){ Utils.sort(elts, data.currentSort); }
       data.elts = elts;
       data.status.loading = false;
     }, function(err){
-      console.warn('can\'t load '+title, err);
+      console.warn('can\'t load data', err);
       data.status.loading = false;
-      data.status.error = err.statusText ? err.statusText : 'Unable to load '+title+' :(';
+      data.status.error = err.statusText ? err.statusText : 'Unable to load data :(';
     });
   }
 
@@ -206,13 +200,12 @@ angular.module('app')
     data.form = null;
   }
 
-  function _ctrlSave(_elt, CrudSrv, data, title){
+  function _ctrlSave(_elt, CrudSrv, data){
     data.status.saving = true;
     var elt = _elt ? _elt : data.form;
     return CrudSrv.save(elt).then(function(elt){
       CollectionUtils.upsertEltBy(data.elts, elt, CrudSrv.eltKey);
       if(data.currentSort){Utils.sort(data.elts, data.currentSort);}
-      if(data.header){ data.header.title = title+' ('+data.elts.length+')'; }
       data.selectedElt = elt;
       data.form = null;
       data.status.loading = false;
@@ -224,12 +217,11 @@ angular.module('app')
     });
   }
 
-  function _ctrlRemove(elt, CrudSrv, data, title){
+  function _ctrlRemove(elt, CrudSrv, data){
     if(elt && elt[CrudSrv.eltKey] && $window.confirm('Supprimer ?')){
       data.status.removing = true;
       return CrudSrv.remove(elt).then(function(){
         CollectionUtils.removeEltBy(data.elts, elt, CrudSrv.eltKey);
-        if(data.header){ data.header.title = title+' ('+data.elts.length+')'; }
         data.selectedElt = null;
         data.form = null;
         data.status.loading = false;
