@@ -1,0 +1,24 @@
+<div>
+  <div class="form-group">
+    <label for="color">Color :</label>
+    <div class="input-group">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button" style="background-color: {{elt.color}};">&nbsp;&nbsp;&nbsp;</button>
+      </span>
+      <input colorpicker="rgba" type="text" class="form-control" id="color" name="color" ng-model="elt.color" required>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="name">Name :</label>
+    <input type="text" class="form-control" id="name" name="name" ng-model="elt.name" required>
+  </div>
+  <div class="form-group">
+    <label for="description">Description :</label>
+    <ng-quill-editor ng-model="elt.description" toolbar="true" editor-required="true"></ng-quill-editor>
+  </div>
+  <div class="checkbox">
+    <label for="done">
+      <input type="checkbox" id="done" name="done" ng-model="elt.done"> Done
+    </label>
+  </div>
+</div>

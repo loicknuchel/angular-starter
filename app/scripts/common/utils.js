@@ -1,6 +1,6 @@
 angular.module('app')
 
-.factory('Utils', function($timeout, $q){
+.factory('Utils', function($timeout, $q, $sce){
   'use strict';
   var service = {
     createUuid: createUuid,
@@ -11,6 +11,7 @@ angular.module('app')
     randInt: randInt,
     async: async,
     debounce: debounce,
+    trustHtml: trustHtml,
     extendDeep: extendDeep,
     extendsWith: extendsWith,
     sort: sort
@@ -48,6 +49,10 @@ angular.module('app')
       defer.resolve(fn());
     }, 0);
     return defer.promise;
+  }
+
+  function trustHtml(html){
+    return $sce.trustAsHtml(html);
   }
 
   var debounces = [];

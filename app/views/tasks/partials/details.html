@@ -1,0 +1,9 @@
+<div>
+  <h4 class="card-heading">Task {{elt.objectId}}</h4>
+  <div>
+    Color: <button class="btn btn-xs" type="button" style="background-color: {{elt.color}};">&nbsp;&nbsp;&nbsp;</button><br>
+    Name: {{elt.name}}<br>
+    Description: <div class="well" ng-bind-html="trustHtml(elt.description)" ng-show="elt.description"></div><br>
+    Done: {{elt.done}}
+  </div>
+</div>

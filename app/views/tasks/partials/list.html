@@ -1,0 +1,32 @@
+<div class="widget">
+  <div class="widget-header">
+    <i class="fa fa-tasks"></i> Tasks ({{filtered.length}})
+    <button type="button" class="btn btn-sm btn-success pull-right" ng-click="crud.fn.create()" style="margin-left: 10px;"><i class="fa fa-plus"></i> New task</button>
+    <input type="text" class="form-control input-sm pull-right" placeholder="Search ..." ng-model="search">
+    <div class="clearfix"></div>
+  </div>
+  <div class="widget-body no-padding">
+    <rd-loading ng-show="crud.data.status.loading && !(crud.data.elts && crud.data.elts.length > 0)"></rd-loading>
+    <div class="alert alert-danger" role="alert" ng-show="crud.data.status.error"><strong>Error!</strong> {{crud.data.status.error}}</div>
+    <div class="table-responsive" ng-show="crud.data.elts && crud.data.elts.length > 0">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th sort="crud.data.currentSort" name="color" ng-click="crud.fn.sort('color')">Color</th>
+            <th sort="crud.data.currentSort" name="name" ng-click="crud.fn.sort('name')">Name</th>
+            <th sort="crud.data.currentSort" name="description" ng-click="crud.fn.sort('description')">Description</th>
+            <th sort="crud.data.currentSort" name="done" ng-click="crud.fn.sort('done')">Done</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="elt in filtered = (crud.data.elts | filter:search)" ng-click="crud.fn.toggle(elt)" ng-class="{active: crud.data.selectedElt && elt.objectId === crud.data.selectedElt.objectId}">
+            <td><button class="btn btn-xs" type="button" style="background-color: {{elt.color}};">&nbsp;&nbsp;&nbsp;</button></td>
+            <td>{{elt.name}}</td>
+            <td><div ng-bind-html="trustHtml(elt.description)"></div></td>
+            <td>{{elt.done}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

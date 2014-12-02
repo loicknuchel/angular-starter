@@ -1,0 +1,32 @@
+<div class="row">
+  <div class="col-md-6">
+    <div ng-include="'views/tasks/partials/list.html'"></div>
+  </div>
+
+  <div class="col-md-6" ng-show="crud.data.selectedElt && !crud.data.form">
+    <div class="card">
+      <span class="pull-right">
+        <a class="btn btn-xs btn-info" ng-click="crud.fn.edit(crud.data.selectedElt)"><i class="fa fa-pencil-square-o"></i></a>
+        <loading-button btn-class="btn-xs btn-danger" btn-icon="fa fa-trash-o" btn-loading="crud.data.status.removing" ng-click="crud.fn.remove(crud.data.selectedElt)"></loading-button>
+      </span>
+      <task elt="crud.data.selectedElt"></task>
+    </div>
+  </div>
+
+  <div class="col-md-6" ng-show="crud.data.form">
+    <form ng-submit="crud.fn.save()">
+      <div class="card">
+        <task-form elt="crud.data.form"></task-form>
+      </div>
+
+      <div class="card">
+        <div class="pull-right">
+          <loading-button btn-type="submit" btn-class="btn-primary" btn-loading="crud.data.status.saving" ng-show="!crud.data.form.objectId">Create</loading-button>
+          <loading-button btn-type="submit" btn-class="btn-success" btn-loading="crud.data.status.saving" ng-show="crud.data.form.objectId">Save</loading-button>
+        </div>
+        <a class="btn btn-default" ng-click="crud.fn.cancelEdit()">Cancel</a>
+        <div class="clearfix"></div>
+      </div>
+    </form>
+  </div>
+</div>

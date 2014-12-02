@@ -83,27 +83,6 @@ angular.module('app')
 })
 
 
-.controller('ParseCtrl', function($scope, TaskSrv, CrudRestUtils){
-  'use strict';
-  /*
-   * TODO : add many different field types (for exemple) :
-   *  - priority (select with predefined values)
-   *  - dueDate (datetime picker)
-   *    - https://github.com/dalelotts/angular-bootstrap-datetimepicker
-   *    - http://mgcrea.github.io/angular-strap/##datepickers (http://www.eyecon.ro/bootstrap-datepicker/)
-   *    - https://github.com/alongubkin/angular-datepicker
-   *    - https://github.com/adamalbrecht/ngQuickDate or https://github.com/killercodemonkey/ngDatePicker
-   *    - https://github.com/g00fy-/angular-datepicker
-   *    - https://github.com/luisfarzati/ng-bs-daterangepicker
-   *    - https://github.com/spongessuck/gm.datepickermultiselect
-   */
-  var defaultSort = {order: 'done', desc: true};
-  var defaultFormElt = {done: false};
-  $scope.crud = CrudRestUtils.createCrudCtrl(TaskSrv, defaultSort, defaultFormElt);
-  $scope.cache = TaskSrv.cache;
-})
-
-
 .controller('LibsCtrl', function($scope){
   'use strict';
   var data = {};

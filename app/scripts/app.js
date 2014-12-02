@@ -64,21 +64,21 @@ angular.module('app', ['ngCookies', 'LocalForageModule', 'ui.router', 'ui.bootst
   })
   .state('user.dashboard', {
     url: '/dashboard',
-    templateUrl: 'views/dashboard.html',
+    templateUrl: 'views/samples/dashboard.html',
     controller: 'DashboardCtrl'
   })
   .state('user.tables', {
     url: '/tables',
-    templateUrl: 'views/tables.html'
+    templateUrl: 'views/samples/tables.html'
   })
-  .state('user.parse', {
-    url: '/parse',
-    templateUrl: 'views/parse.html',
-    controller: 'ParseCtrl'
+  .state('user.tasks', {
+    url: '/tasks',
+    templateUrl: 'views/tasks/main.html',
+    controller: 'TasksCtrl'
   })
   .state('user.libs', {
     url: '/libs',
-    templateUrl: 'views/libs.html',
+    templateUrl: 'views/samples/libs.html',
     controller: 'LibsCtrl'
   });
 
@@ -101,7 +101,7 @@ angular.module('app', ['ngCookies', 'LocalForageModule', 'ui.router', 'ui.bootst
 
 .constant('Config', Config)
 
-.run(function($rootScope, $sce, $state, $window, AuthSrv, LogSrv){
+.run(function($rootScope, $state, $window, AuthSrv, LogSrv, Utils){
   'use strict';
   // init
   var data = {}, fn = {};
@@ -162,7 +162,5 @@ angular.module('app', ['ngCookies', 'LocalForageModule', 'ui.router', 'ui.bootst
     }
   };
 
-  $rootScope.trustHtml = function(html){
-    return $sce.trustAsHtml(html);
-  };
+  $rootScope.trustHtml = Utils.trustHtml;
 });
