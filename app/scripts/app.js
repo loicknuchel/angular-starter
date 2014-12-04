@@ -101,7 +101,7 @@ angular.module('app', ['ngCookies', 'LocalForageModule', 'ui.router', 'ui.bootst
 
 .constant('Config', Config)
 
-.run(function($rootScope, $state, $window, AuthSrv, LogSrv, Utils){
+.run(function($rootScope, $state, $window, UserSrv, LogSrv, Utils){
   'use strict';
   // init
   var data = {}, fn = {};
@@ -130,14 +130,14 @@ angular.module('app', ['ngCookies', 'LocalForageModule', 'ui.router', 'ui.bootst
       LogSrv.trackError('NoAccessRestrictionForState', 'State <'+toState.name+'> has no access data !!!');
       event.preventDefault();
     } else {
-      if(!AuthSrv.isAuthorized(toState.data.access)){
-        AuthSrv.isAuthorizedAsync(toState.data.access).then(function(authorized){
+      if(!UserSrv.isAuthorized(toState.data.access)){
+        UserSrv.isAuthorizedAsync(toState.data.access).then(function(authorized){
           if(!authorized){
             LogSrv.trackError('UnauthorizedUser', 'User tried to access <'+toState.name+'> state with no authorization !!!');
             event.preventDefault();
 
             if(fromState.url === '^'){
-              if(AuthSrv.isLoggedIn()){
+              if(UserSrv.isLoggedIn()){
                 $state.go('user.home');
               } else {
                 $rootScope.error = null;

@@ -7,7 +7,7 @@ It's greatly inspired/copied from [rdash/rdash-angular](https://github.com/rdash
 
 With this template you will have :
 
-- a login system already setted (see [AuthSrv](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/services.js))
+- a login system already setted (see [UserSrv](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/services.js))
 - an advanced logging & tracking errors system (see [_log.js](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/_log.js))
 - CRUD helper for standard REST webservices & [Parse](https://parse.com/)
 - many helpers such as [filters for dates](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/filters.js), [crud builders](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/common/crud-rest-utils.js), [storage helpers](https://github.com/loicknuchel/angularjs-dashboard/blob/master/app/scripts/common/storage.js) and many more...

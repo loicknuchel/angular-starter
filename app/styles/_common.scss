@@ -34,6 +34,12 @@
     margin-top: 0px;
   }
 }
+.col-md-12, .col-md-10, .col-md-8, .col-md-6, .col-md-4, .col-md-3 {
+  & > .card {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+}
 
 ng-quill-editor {
   .editor-container {

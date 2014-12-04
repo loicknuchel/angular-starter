@@ -1,6 +1,6 @@
 angular.module('app')
 
-.controller('LoginCtrl', function ($scope, $state, AuthSrv){
+.controller('LoginCtrl', function ($scope, $state, UserSrv){
   'use strict';
   var data = {}, fn = {};
   $scope.data = data;
@@ -21,7 +21,7 @@ angular.module('app')
   fn.login = function(){
     data.status.loading = true;
     data.status.error = '';
-    AuthSrv.login(data.credentials).then(function(user){
+    UserSrv.login(data.credentials).then(function(user){
       data.status.loading = false;
       $state.go('user.home');
     }, function(error){
@@ -33,7 +33,7 @@ angular.module('app')
   fn.recover = function(){
     data.status.loading = true;
     data.status.error = '';
-    AuthSrv.passwordRecover(data.credentials).then(function(){
+    UserSrv.passwordRecover(data.credentials).then(function(){
       data.status.loading = false;
       data.status.success = 'Check your inbox for password recovery !';
     }, function(error){
@@ -44,7 +44,7 @@ angular.module('app')
   fn.signup = function(){
     data.status.loading = true;
     data.status.error = '';
-    AuthSrv.signup(data.credentials).then(function(user){
+    UserSrv.signup(data.credentials).then(function(user){
       data.status.loading = false;
       $state.go('user.home');
     }, function(error){
@@ -56,10 +56,10 @@ angular.module('app')
 })
 
 
-.controller('MainCtrl', function($scope, $state, AuthSrv){
+.controller('MainCtrl', function($scope, $state, UserSrv){
   'use strict';
   $scope.logout = function(){
-    AuthSrv.logout().then(function(){
+    UserSrv.logout().then(function(){
       $state.go('anon.login');
     });
   };

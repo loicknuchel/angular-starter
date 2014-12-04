@@ -14,7 +14,7 @@ angular.module('app')
       sort: '='
     },
     transclude: true,
-    link: function(scope, element, attr){
+    link: function(scope, element, attrs){
       element.addClass('sort');
 
       scope.$watch('sort.order', function(val){
@@ -60,8 +60,8 @@ angular.module('app')
     restrict: 'A',
     require: 'ngModel',
     priority: 99,
-    link: function(scope, element, attr, ngModelCtrl){
-      if(attr.type === 'radio' || attr.type === 'checkbox'){ return; }
+    link: function(scope, element, attrs, ngModelCtrl){
+      if(attrs.type === 'radio' || attrs.type === 'checkbox'){ return; }
 
       var debounce;
       element.unbind('input');
@@ -71,7 +71,7 @@ angular.module('app')
           scope.$apply(function(){
             ngModelCtrl.$setViewValue(element.val());
           });
-        }, attr.ngDebounce || 1000);
+        }, attrs.ngDebounce || 1000);
       });
       element.bind('blur', function(){
         scope.$apply(function(){

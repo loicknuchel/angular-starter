@@ -2,19 +2,20 @@ angular.module('app')
 
 .provider('ParseUtils', function(){
   'use strict';
-  var parseCredentials = {
+  var credentials = {
     applicationId: null,
     restApiKey: null
   };
 
   this.initialize = function(applicationId, restApiKey) {
-    parseCredentials.applicationId = applicationId;
-    parseCredentials.restApiKey = restApiKey;
+    credentials.applicationId = applicationId;
+    credentials.restApiKey = restApiKey;
   };
 
   this.$get = ['$http', '$q', 'CrudRestUtils', function($http, $q, CrudRestUtils){
     var service = {
       createCrud: createCrud,
+      createUserCrud: createUserCrud,
       signup: signup,
       login: login,
       passwordRecover: passwordRecover
@@ -22,8 +23,8 @@ angular.module('app')
     var parseUrl = 'https://api.parse.com/1';
     var parseHttpConfig = {
       headers: {
-        'X-Parse-Application-Id': parseCredentials.applicationId,
-        'X-Parse-REST-API-Key': parseCredentials.restApiKey
+        'X-Parse-Application-Id': credentials.applicationId,
+        'X-Parse-REST-API-Key': credentials.restApiKey
       }
     };
 
@@ -41,6 +42,24 @@ angular.module('app')
       };
 
       return CrudRestUtils.createCrud(endpointUrl, objectKey, _getData, _processBreforeSave, _useCache, parseHttpConfig);
+    }
+
+    function createUserCrud(sessionToken, _processBreforeSave, _useCache){
+      var endpointUrl = parseUrl+'/users';
+      var objectKey = 'objectId';
+      var _getData = function(result){
+        if(result && result.data){
+          if(!result.data[objectKey] && result.data.results){
+            return result.data.results;
+          } else {
+            return result.data;
+          }
+        }
+      };
+      var parseUserHttpConfig = angular.copy(parseHttpConfig);
+      parseUserHttpConfig.headers['X-Parse-Session-Token'] = sessionToken;
+
+      return CrudRestUtils.createCrud(endpointUrl, objectKey, _getData, _processBreforeSave, _useCache, parseUserHttpConfig);
     }
 
     // user MUST have fields 'username' and 'password'. The first one should be unique, application wise.
