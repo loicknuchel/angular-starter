@@ -30,8 +30,16 @@ With this template you will have :
 ## TODO
 
 - create some directive to create charts with highcharts
+- add a calendar management
+- add notifications
 - create some utils for Firebase
 - live exemple en github pages
+
+## Other good dashboards
+
+- [Flat Dream](http://condorthemes.com/flatdream/pages-profile.html) from [wrapbootstrap](https://wrapbootstrap.com/theme/flat-dream-responsive-admin-template-WB004G996)
+- [Inspinia](http://webapplayers.com/inspinia_admin-v1.6/profile.html) from [wrapbootstrap](https://wrapbootstrap.com/theme/inspinia-responsive-admin-theme-WB0R5L90S)
+- [Metronic](http://www.keenthemes.com/preview/metronic/theme/templates/admin/angularjs/) from [themeforest](http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469)
 
 ## Feedback
 

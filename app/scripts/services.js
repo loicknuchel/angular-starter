@@ -1,7 +1,7 @@
 angular.module('app')
 
 
-.factory('UserSrv', function($q, $http, StorageUtils){
+.factory('UserSrv', function($q, $http, StorageUtils, Utils){
   'use strict';
   var storageKey = 'user';
   var defaultUser = { username: '', role: routingConfig.userRoles.public };
@@ -36,6 +36,23 @@ angular.module('app')
     } else {
       return StorageUtils.set(storageKey, user);
     }
+  }
+  function savePartialUser(data){
+    return getCurrent().then(function(user){
+      if(userCrud){
+        return userCrud.savePartial(user, data).then(function(){
+          Utils.extendDeep(user, data);
+          return StorageUtils.set(storageKey, user).then(function(){
+            return user;
+          });
+        });
+      } else {
+        Utils.extendDeep(user, data);
+        return StorageUtils.set(storageKey, user).then(function(){
+          return user;
+        });
+      }
+    });
   }
 
   function isAuthorized(accessLevel, _role){

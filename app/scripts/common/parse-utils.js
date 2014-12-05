@@ -59,7 +59,13 @@ angular.module('app')
       var parseUserHttpConfig = angular.copy(parseHttpConfig);
       parseUserHttpConfig.headers['X-Parse-Session-Token'] = sessionToken;
 
-      return CrudRestUtils.createCrud(endpointUrl, objectKey, _getData, _processBreforeSave, _useCache, parseUserHttpConfig);
+      var service = CrudRestUtils.createCrud(endpointUrl, objectKey, _getData, _processBreforeSave, _useCache, parseUserHttpConfig);
+      service.savePartial = function(user, dataToSave){
+        var toSave = angular.copy(dataToSave);
+        toSave[objectKey] = user[objectKey];
+        return service.save(toSave);
+      };
+      return service;
     }
 
     // user MUST have fields 'username' and 'password'. The first one should be unique, application wise.
