@@ -20,8 +20,8 @@ With this template you will have :
 
 ## Getting started
 
-- clone the repo `git clone git@github.com:loicknuchel/angular-dashboard.git`
-- go to project folder `cd angularjs-dashboard`
+- clone the repo `git clone git@github.com:loicknuchel/angular-starter.git`
+- go to project folder `cd angular-starter`
 - run `npm install`
 - run `bower install`
 - run `grunt serve`

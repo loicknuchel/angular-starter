@@ -37,7 +37,7 @@ angular.module('app')
   function _getSync(key, _defaultValue, _callback){
     if(!storageCache[key]){
       _get(key, _defaultValue).then(function(value){
-        _callback(value);
+        if(_callback){ _callback(value); }
       });
       return angular.copy(_defaultValue);
     } else {
@@ -58,7 +58,7 @@ angular.module('app')
         return $q.when();
       }
     } else {
-      console.debug('Don\'t save <'+key+'> because values are equals !');
+      console.debug('Don\'t save <'+key+'> because values are equals !', value);
       return $q.when();
     }
   }
