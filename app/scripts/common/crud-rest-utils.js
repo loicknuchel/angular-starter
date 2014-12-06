@@ -9,19 +9,22 @@ angular.module('app')
 
   /*
    * Create a service connected to a REST backend with following endpoints :
-   *  - GET     /endpoint     : return an array of all values in the property 'data' of the response
-   *  - GET     /endpoint/:id : return the value with the specified id in the property 'data' of the response
-   *  - POST    /endpoint     : create new value with a random id an return the created id in the property 'data' of the response
-   *  - PUT     /endpoint/:id : update the value with the specified id
-   *  - DELETE  /endpoint/:id : delete the value with the specified id and return only the status code
+   *  - GET     /endpoint       : return an array of all values in the property 'data' of the response
+   *  - GET     /endpoint?where : return an array of values matching object specified in 'where' in the property 'data' of the response
+   *  - GET     /endpoint/:id   : return the value with the specified id in the property 'data' of the response
+   *  - POST    /endpoint       : create new value with a random id an return the created id in the property 'data' of the response
+   *  - PUT     /endpoint/:id   : update the value with the specified id
+   *  - DELETE  /endpoint/:id   : delete the value with the specified id and return only the status code
    */
   function createCrud(endpointUrl, _objectKey, _getData, _processBreforeSave, _useCache, _httpConfig){
     var objectKey = _objectKey ? _objectKey : 'id';
-    var cache = _useCache ? $cacheFactory(endpointUrl) : null;
+    var cache = _useCache === false ? null : $cacheFactory(endpointUrl);
     var CrudSrv = {
       eltKey:   objectKey,
       getUrl:   function(_id)           { return _crudGetUrl(endpointUrl, _id);                                                             },
       getAll:   function(_noCache)      { return _crudGetAll(endpointUrl, objectKey, cache, _noCache, _getData, _httpConfig);               },
+      find:     function(where)         { return _crudFind(where, endpointUrl, objectKey, cache, _getData, _httpConfig);                    },
+      findOne:  function(where)         { return _crudFindOne(where, endpointUrl, objectKey, cache, _getData, _httpConfig);                 },
       get:      function(id, _noCache)  { return _crudGet(id, endpointUrl, objectKey, cache, _noCache, _getData, _httpConfig);              },
       save:     function(elt)           { return _crudSave(elt, endpointUrl, objectKey, cache, _processBreforeSave, _getData, _httpConfig); },
       remove:   function(elt)           { return _crudRemove(elt, endpointUrl, objectKey, cache, _httpConfig);                              }
@@ -96,6 +99,30 @@ angular.module('app')
           }
         }
         return elts;
+      }
+    });
+  }
+
+  function _crudFind(where, endpointUrl, objectKey, _cache, _getData, _httpConfig){
+    var url = _crudGetUrl(endpointUrl);
+    return $http.get(url+'?where='+JSON.stringify(where), _crudConfig(null, _httpConfig)).then(function(result){
+      var elts = typeof _getData === 'function' ? _getData(result) : result.data;
+      if(Array.isArray(elts)){
+        if(_cache){ // add all individual elements to cache !
+          for(var i in elts){
+            _setInCache(_cache, endpointUrl, objectKey, result, elts[i]);
+          }
+        }
+        return elts;
+      }
+    });
+  }
+
+  function _crudFindOne(where, endpointUrl, objectKey, _cache, _getData, _httpConfig){
+    return _crudFind(where, endpointUrl, objectKey, _cache, _getData, _httpConfig).then(function(elts){
+      if(Array.isArray(elts) && elts.length > 0){
+        if(elts.length > 1){ console.warn('More than one result for clause', where); }
+        return elts[0];
       }
     });
   }

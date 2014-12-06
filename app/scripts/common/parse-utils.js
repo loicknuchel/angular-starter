@@ -21,6 +21,16 @@ angular.module('app')
       passwordRecover: passwordRecover
     };
     var parseUrl = 'https://api.parse.com/1';
+    var parseObjectKey = 'objectId';
+    var getParseData = function(result){
+      if(result && result.data){
+        if(!result.data[parseObjectKey] && result.data.results){
+          return result.data.results;
+        } else {
+          return result.data;
+        }
+      }
+    };
     var parseHttpConfig = {
       headers: {
         'X-Parse-Application-Id': credentials.applicationId,
@@ -30,39 +40,18 @@ angular.module('app')
 
     function createCrud(objectUrl, _processBreforeSave, _useCache){
       var endpointUrl = parseUrl+objectUrl;
-      var objectKey = 'objectId';
-      var _getData = function(result){
-        if(result && result.data){
-          if(!result.data[objectKey] && result.data.results){
-            return result.data.results;
-          } else {
-            return result.data;
-          }
-        }
-      };
-
-      return CrudRestUtils.createCrud(endpointUrl, objectKey, _getData, _processBreforeSave, _useCache, parseHttpConfig);
+      return CrudRestUtils.createCrud(endpointUrl, parseObjectKey, getParseData, _processBreforeSave, _useCache, parseHttpConfig);
     }
 
     function createUserCrud(sessionToken, _processBreforeSave, _useCache){
       var endpointUrl = parseUrl+'/users';
-      var objectKey = 'objectId';
-      var _getData = function(result){
-        if(result && result.data){
-          if(!result.data[objectKey] && result.data.results){
-            return result.data.results;
-          } else {
-            return result.data;
-          }
-        }
-      };
       var parseUserHttpConfig = angular.copy(parseHttpConfig);
       parseUserHttpConfig.headers['X-Parse-Session-Token'] = sessionToken;
 
-      var service = CrudRestUtils.createCrud(endpointUrl, objectKey, _getData, _processBreforeSave, _useCache, parseUserHttpConfig);
+      var service = CrudRestUtils.createCrud(endpointUrl, parseObjectKey, getParseData, _processBreforeSave, _useCache, parseUserHttpConfig);
       service.savePartial = function(user, dataToSave){
         var toSave = angular.copy(dataToSave);
-        toSave[objectKey] = user[objectKey];
+        toSave[parseObjectKey] = user[parseObjectKey];
         return service.save(toSave);
       };
       return service;

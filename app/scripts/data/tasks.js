@@ -2,7 +2,7 @@ angular.module('app')
 
 .factory('TaskSrv', function(ParseUtils){
   'use strict';
-  return ParseUtils.createCrud('/classes/Task', null, true);
+  return ParseUtils.createCrud('/classes/Task');
 })
 
 /* Sample CRUD with Parse */
