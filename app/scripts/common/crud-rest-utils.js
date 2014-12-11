@@ -40,6 +40,7 @@ angular.module('app')
       elts:           [],
       currentSort:    _defaultSort ? _defaultSort : {},
       selectedElt:    null,
+      selectedElts:   [],
       defaultFormElt: _defaultFormElt ? _defaultFormElt : {},
       form:           null,
       status: {
@@ -52,16 +53,21 @@ angular.module('app')
     var ctrl = {
       data: data,
       fn: {
-        sort:       function(order, _desc)    { _ctrlSort(order, _desc, data);          },
-        toggle:     function(elt)             { _ctrlToggle(elt, CrudSrv, data);        },
-        create:     function()                { _ctrlCreate(data);                      },
-        edit:       function(elt)             { _ctrlEdit(elt, data);                   },
-        addElt:     function(obj, attr, _elt) { _ctrlAddElt(obj, attr, _elt);           },
-        removeElt:  function(arr, index)      { _ctrlRemoveElt(arr, index);             },
-        cancelEdit: function()                { _ctrlCancelEdit(data);                  },
-        save:       function(_elt)            { return _ctrlSave(_elt, CrudSrv, data);  },
-        remove:     function(elt)             { return _ctrlRemove(elt, CrudSrv, data); },
-        eltRestUrl: function(_elt)            { return _ctrlEltRestUrl(_elt, CrudSrv);  }
+        isSelected:     function(elt)             { return _ctrlIsSelected(elt, data);      },
+        isNoneSelected: function()                { return _ctrlIsNoneSelected(data);       },
+        isSomeSelected: function()                { return _ctrlIsSomeSelected(data);       },
+        isAllSelected:  function()                { return _ctrlIsAllSelected(data);        },
+        sort:           function(order, _desc)    { _ctrlSort(order, _desc, data);          },
+        toggle:         function(elt)             { _ctrlToggle(elt, CrudSrv, data);        },
+        toggleAll:      function()                { _ctrlToggleAll(data);                   },
+        create:         function()                { _ctrlCreate(data);                      },
+        edit:           function(elt)             { _ctrlEdit(elt, data);                   },
+        addElt:         function(obj, attr, _elt) { _ctrlAddElt(obj, attr, _elt);           },
+        removeElt:      function(arr, index)      { _ctrlRemoveElt(arr, index);             },
+        cancelEdit:     function()                { _ctrlCancelEdit(data);                  },
+        save:           function(_elt)            { return _ctrlSave(_elt, CrudSrv, data);  },
+        remove:         function(elt)             { return _ctrlRemove(elt, CrudSrv, data); },
+        eltRestUrl:     function(_elt)            { return _ctrlEltRestUrl(_elt, CrudSrv);  }
       }
     };
 
@@ -188,6 +194,11 @@ angular.module('app')
     });
   }
 
+  function _ctrlIsSelected(elt, data) { return data && data.selectedElts.indexOf(elt) >= 0;                                                       };
+  function _ctrlIsNoneSelected(data)  { return data && data.selectedElts.length === 0;                                                            };
+  function _ctrlIsSomeSelected(data)  { return data && data.elts && 0 < data.selectedElts.length && data.selectedElts.length < data.elts.length;  };
+  function _ctrlIsAllSelected (data)  { return data && data.elts && data.selectedElts.length === data.elts.length;                                };
+
   function _ctrlSort(order, _desc, data){
     if(data.currentSort.order === order){
       data.currentSort.desc = !data.currentSort.desc;
@@ -204,7 +215,28 @@ angular.module('app')
       data.selectedElt = elt;
     }
     data.form = null;
+
+    if(elt && Array.isArray(data.selectedElts)){
+      var index = data.selectedElts.indexOf(elt);
+      if(index >= 0){
+        data.selectedElts.splice(index, 1);
+      } else {
+        data.selectedElts.push(elt);
+      }
+    }
   }
+
+  function _ctrlToggleAll(data){
+    if(data && data.elts){
+      if(_ctrlIsNoneSelected(data)){
+        for(var i in data.elts){
+          data.selectedElts.push(data.elts[i]);
+        }
+      } else {
+        CollectionUtils.clear(data.selectedElts);
+      }
+    }
+  };
 
   function _ctrlCreate(data){
     data.form = angular.copy(data.defaultFormElt);

@@ -3,18 +3,18 @@ angular.module('app')
 .factory('Utils', function($timeout, $q, $sce){
   'use strict';
   var service = {
-    createUuid: createUuid,
-    isEmail: isEmail,
-    isUrl: isUrl,
-    startsWith: startsWith,
-    endsWith: endsWith,
-    randInt: randInt,
-    async: async,
-    debounce: debounce,
-    trustHtml: trustHtml,
-    extendDeep: extendDeep,
-    extendsWith: extendsWith,
-    sort: sort
+    createUuid: createUuid,   // ()                             generate an identifier like 'de7a545d-0045-454a-81de-deb9d74e74a7'
+    isEmail: isEmail,         // (str)                          check if str has email format
+    isUrl: isUrl,             // (str)                          check if str has url format
+    startsWith: startsWith,   // (str, prefix)                  check if str starts with prefix
+    endsWith: endsWith,       // (str, suffix)                  check if str ends with suffix
+    randInt: randInt,         // (min, max)                     generate a random Int between min & max
+    async: async,             // (fn)                           transform synchronous function in asynchronous function
+    debounce: debounce,       // (key, callback, _debounceTime) debounce a value based on given key
+    trustHtml: trustHtml,     // (html)                         angular trust html (to display unsafe html)
+    extendDeep: extendDeep,   // (dest, args...)                extends dest with values in args objets (like angular.extends but recursivly)
+    extendsWith: extendsWith, // (dest, src)                    add src values to dest where key is undefined (do not override existing values)
+    sort: sort                // (arr, params)                  sort Array arr according to params (order: elt attribute name, desc: true/false)
   };
 
   function createUuid(){
@@ -27,8 +27,8 @@ angular.module('app')
     return re.test(str);
   }
 
-  function isUrl(text) {
-    return (/^(https?):\/\/((?:[a-z0-9.-]|%[0-9A-F]{2}){3,})(?::(\d+))?((?:\/(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})*)*)(?:\?((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?$/i).test(text);
+  function isUrl(str){
+    return (/^(https?):\/\/((?:[a-z0-9.-]|%[0-9A-F]{2}){3,})(?::(\d+))?((?:\/(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})*)*)(?:\?((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?$/i).test(str);
   }
 
   function startsWith(str, prefix){

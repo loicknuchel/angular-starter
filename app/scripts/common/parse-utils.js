@@ -14,11 +14,11 @@ angular.module('app')
 
   this.$get = ['$http', '$q', 'CrudRestUtils', function($http, $q, CrudRestUtils){
     var service = {
-      createCrud: createCrud,
-      createUserCrud: createUserCrud,
-      signup: signup,
-      login: login,
-      passwordRecover: passwordRecover
+      createCrud: createCrud,           // (objectUrl, _processBreforeSave, _useCache)      create an angular service to interract with Parse (see CrudRestUtils)
+      createUserCrud: createUserCrud,   // (sessionToken, _processBreforeSave, _useCache)   create an angular service to interract with Parse User object
+      signup: signup,                   // (user)                                           signup new user in parse. User MUST contain username & password fields !
+      login: login,                     // (username, password)                             login existing user
+      passwordRecover: passwordRecover  // (email)                                          send user password reset
     };
     var parseUrl = 'https://api.parse.com/1';
     var parseObjectKey = 'objectId';

@@ -1,6 +1,7 @@
 angular.module('app')
 
-.factory('StorageUtils', function($window, $localForage, $q, Utils, Config){
+// Storage helpuer using localForage (asynchronous best avaiable browser storage) and cache
+.factory('StorageUtils', function($localForage, $q, Utils, Config){
   'use strict';
   var storageCache = {};
   var service = {
@@ -109,15 +110,16 @@ angular.module('app')
 })
 
 
+// LocalStorage helper with caching system & asynchronous calls
 .factory('LocalStorageUtils', function($window, Utils, Config){
   'use strict';
   var storageCache = {};
   var service = {
-    get:                function(key, _defaultValue) { return Utils.async(_get(key, _defaultValue));        },
-    set:                function(key, value)        { return Utils.async(_set(key, value));                 },
-    remove:             function(key)               { return Utils.async(_remove(key));                     },
-    clear:              function()                  { return Utils.async(_clear());                         },
-    clearStartingWith:  function(keyStartWith)      { return Utils.async(_clearStartingWith(keyStartWith)); },
+    get:                function(key, _defaultValue)  { return Utils.async(_get(key, _defaultValue));         },
+    set:                function(key, value)          { return Utils.async(_set(key, value));                 },
+    remove:             function(key)                 { return Utils.async(_remove(key));                     },
+    clear:              function()                    { return Utils.async(_clear());                         },
+    clearStartingWith:  function(keyStartWith)        { return Utils.async(_clearStartingWith(keyStartWith)); },
     getSync: _get,
     setSync: _set,
     removeSync: _remove,
