@@ -1,6 +1,11 @@
-node_modules
-dist
-.tmp
-.sass-cache
-app/bower_components
+.tmp/
+.sass-cache/
+app/bower_components/
+app/fonts/
+coverage/
+node_modules/
+dist/
+
 npm-debug.log
+
+*~

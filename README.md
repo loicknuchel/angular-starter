@@ -2,7 +2,7 @@
 
 ![screenshot](screenshots/dashboard.jpg)
 
-This is a fully featured app to quickly start using Angular with [grunt](http://gruntjs.com/) and [bower](http://bower.io/).
+This is a fully featured Angular app to quickly starting a new project using Angular with [grunt](http://gruntjs.com/) and [bower](http://bower.io/).
 Design is greatly inspired/copied from [rdash/rdash-angular](https://github.com/rdash/rdash-angular), so, thanks for them ;)
 
 With this template you will have :
@@ -21,17 +21,17 @@ With this template you will have :
 
 ## Getting started
 
-- clone the repo `git clone git@github.com:loicknuchel/angular-starter.git`
-- go to project folder `cd angular-starter`
-- run `npm install`
-- run `bower install`
-- run `grunt serve`
-- You're setup with a shiny livereload :D
+- `git clone git@github.com:loicknuchel/angular-starter.git` : get code on your laptop
+- `cd angular-starter` : go to project root folder
+- `npm install` : install all grunt dependencies
+- `bower install` : to install all bower dependencies
+- `grunt serve` : to test on your computer
+- You're now ready with a shiny livereload :D
 
 You have also other grunt commands :
 
-- `grunt test` to run your test suite
-- `grunt build` to concatenate & minify your app
+- `grunt test` : run your test suite
+- `grunt build` : build (concatenate & minify) your app
 
 ## TODO
 
