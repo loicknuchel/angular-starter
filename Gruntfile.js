@@ -62,7 +62,7 @@ module.exports = function(grunt){
           '<%= yeoman.app %>/*.html',
           '<%= yeoman.app %>/views/**/*.html',
           '.tmp/styles/**/*.css',
-          '<%= yeoman.app %>/images/**/*.{png,jpg,jpeg,gif,webp,svg}'
+          '<%= yeoman.app %>/images/**/*.{png,jpg,jpeg,gif,webp,svg,ico}'
         ]
       }
     },
@@ -211,8 +211,7 @@ module.exports = function(grunt){
           src: [
             '<%= yeoman.dist %>/scripts/**/*.js',
             '<%= yeoman.dist %>/styles/**/*.css',
-            '<%= yeoman.dist %>/images/**/*.{png,jpg,jpeg,gif,webp,svg}',
-            '<%= yeoman.dist %>/styles/fonts/*'
+            '<%= yeoman.dist %>/images/**/*.{png,jpg,jpeg,gif,webp,svg,ico}'
           ]
         }
       }
@@ -249,6 +248,7 @@ module.exports = function(grunt){
     // The following *-min tasks produce minified files in the dist folder
     cssmin: {
       options: {
+        noRebase: true,
         root: '<%= yeoman.app %>'
       }
     },
@@ -258,7 +258,7 @@ module.exports = function(grunt){
         files: [{
           expand: true,
           cwd: '<%= yeoman.app %>/images',
-          src: '**/*.{png,jpg,jpeg,gif}',
+          src: '**/*.{png,jpg,jpeg,gif,ico}',
           dest: '<%= yeoman.dist %>/images'
         }]
       }
@@ -339,6 +339,15 @@ module.exports = function(grunt){
         cwd: '<%= yeoman.app %>/styles',
         dest: '.tmp/styles/',
         src: '**/*.css'
+      },
+      fonts: {
+        expand: true,
+        flatten: true,
+        src: [
+          '<%= yeoman.app %>/bower_components/font-awesome/fonts/*'
+        ],
+        dest: '<%= yeoman.app %>/fonts/',
+        filter: 'isFile'
       }
     },
 
@@ -353,7 +362,9 @@ module.exports = function(grunt){
       dist: [
         'compass:dist',
         'imagemin',
-        'svgmin'
+        'svgmin',
+        'copy:styles',
+        'copy:fonts'
       ]
     },
 
