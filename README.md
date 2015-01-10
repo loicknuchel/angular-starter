@@ -19,6 +19,10 @@ With this template you will have :
     - [angular-bootstrap-colorpicker](https://github.com/buberdds/angular-bootstrap-colorpicker) (alternatives: [angular-minicolors](https://github.com/kaihenzler/angular-minicolors), [angular-spectrum-colorpicker](https://github.com/Jimdo/angular-spectrum-colorpicker), [bootstrap-colorselector](https://github.com/flaute/bootstrap-colorselector))
 - And, last but not least, tests already setup with [Karma](http://karma-runner.github.io/) and [Jasmine](http://jasmine.github.io/2.1/introduction.html)
 
+Similar projects :
+
+- [angular-parse-boilerplate](https://github.com/jbeurel/angular-parse-boilerplate)
+
 ## Getting started
 
 - `git clone git@github.com:loicknuchel/angular-starter.git` : get code on your laptop
